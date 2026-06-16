@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Search, Heart, ShoppingBag, User, Menu, X, ArrowRight, Mic, BookOpen } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
+import SearchOverlay from "../search/SearchOverlay";
 
 const Header = () => {
   const { isAuthenticated, wishlistCount } = useAuth();
@@ -305,46 +306,7 @@ const Header = () => {
       </header>
 
       {/* 1. Full-Width Search Overlay */}
-      {isSearchOpen && (
-        <div
-          onClick={handleOutsideClick}
-          className="fixed inset-0 bg-charcoal/40 backdrop-blur-sm z-[100] flex items-start justify-center pt-24"
-        >
-          <div
-            ref={searchRef}
-            className="w-full max-w-4xl bg-ivory shadow-2xl rounded-2xl border border-primary-soft/30 p-6 mx-4 relative transform transition-transform duration-300 animate-slide-down"
-          >
-            <button
-              onClick={() => setIsSearchOpen(false)}
-              className="absolute top-4 right-4 p-2 text-gray hover:text-charcoal transition-colors rounded-full"
-              aria-label="Fermer"
-            >
-              <X size={20} />
-            </button>
-
-            <form onSubmit={handleSearchSubmit} className="mt-4 flex items-center border-b-2 border-primary-soft py-3">
-              <Search className="text-gray mr-3" size={24} />
-              <input
-                ref={searchInputRef}
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Quel livre ou auteur cherchez-vous ?"
-                className="w-full bg-transparent text-xl font-serif placeholder-gray/60 outline-none text-charcoal"
-              />
-              <button
-                type="submit"
-                className="p-2 bg-primary hover:bg-primary-dark text-white rounded-full transition-colors ml-2"
-              >
-                <ArrowRight size={18} />
-              </button>
-            </form>
-            <div className="mt-4 text-xs text-gray/70 font-poppins uppercase tracking-wider">
-              Appuyez sur Entrée pour lancer la recherche, ou Echap pour fermer.
-            </div>
-          </div>
-        </div>
-      )}
+      <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
 
       {/* 2. Mobile Drawer Lateral Menu */}
       {isMobileMenuOpen && (

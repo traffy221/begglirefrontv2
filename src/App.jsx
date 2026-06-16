@@ -66,6 +66,7 @@ import ConnexionPage from "./page/ConnexionPage";
 import MonCompte from "./page/MonCompte";
 import SellBook from "./page/sell-book/SellBook";
 import Community from "./page/communaute/Community";
+import SearchPage from "./page/SearchPage";
 import AuthorCommunity from "./page/communaute/AuthorCommunity";
 import BlogDetail from "./page/communaute/BlogDetail";
 import ChroniqueDetail from "./page/communaute/ChroniqueDetail";
@@ -99,6 +100,7 @@ function App() {
                 
                 {/* Connection Route (unified sign-in / sign-up page) */}
                 <Route path="/connexion" element={<ConnexionPage />} />
+                <Route path="/recherche" element={<SearchPage />} />
 
                 {/* Protected Routes (Auth Required) */}
                 <Route
