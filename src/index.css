@@ -1,0 +1,149 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   CSS VARIABLES - DESIGN SYSTEM TOKENS
+   ========================================================================== */
+:root {
+  --primary: #76BD47;
+  --primary-dark: #5a9c35;
+  --primary-light: #83c259;
+  --primary-soft: #d5eac7;
+  --gold: #E5B23E;
+  --ivory: #fbfbf9;
+  --charcoal: #181818;
+  --gray: #666666;
+  --border: #D8D8D9;
+  --destructive: #ef4444;
+}
+
+/* ==========================================================================
+   BASE RESETS & EDITORIAL LAYOUT FOUNDATION
+   ========================================================================== */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--ivory);
+    color: var(--charcoal);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Lora', Georgia, ui-serif, serif;
+    margin-top: 0;
+  }
+}
+
+/* ==========================================================================
+   CUSTOM HERO & UTILITY ANIMATIONS
+   ========================================================================== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes wave {
+  0%, 100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(2.2);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease forwards;
+}
+
+.animate-slide-in-up {
+  animation: slideInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animation-delay-300 {
+  animation-delay: 300ms;
+}
+
+.animation-delay-500 {
+  animation-delay: 500ms;
+}
+
+.animation-delay-700 {
+  animation-delay: 700ms;
+}
+
+.animation-delay-900 {
+  animation-delay: 900ms;
+}
+
+.animation-delay-1100 {
+  animation-delay: 1100ms;
+}
+
+/* Wave bars animation classes */
+.animate-wave-bar-1 {
+  animation: wave 1s ease-in-out infinite;
+  transform-origin: bottom;
+}
+.animate-wave-bar-2 {
+  animation: wave 1s ease-in-out infinite 0.15s;
+  transform-origin: bottom;
+}
+.animate-wave-bar-3 {
+  animation: wave 1s ease-in-out infinite 0.3s;
+  transform-origin: bottom;
+}
+.animate-wave-bar-4 {
+  animation: wave 1s ease-in-out infinite 0.45s;
+  transform-origin: bottom;
+}
+
+/* Scrollbar Utility */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
