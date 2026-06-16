@@ -205,7 +205,7 @@ export default function SearchResults({ results, activeFilter, query, onClose, a
               >
                 <div className="flex items-center space-x-3 min-w-0">
                   {/* Article cover */}
-                  <div className="w-10 h-10 bg-primary-soft/15 rounded overflow-hidden shrink-0 border border-primary-soft/10 flex items-center justify-center">
+                  <div className="w-10 h-10 bg-primary-soft/10 rounded overflow-hidden shrink-0 border border-primary-soft/10 flex items-center justify-center">
                     {article.image ? (
                       <img src={article.image} alt={article.titre} className="w-full h-full object-cover" />
                     ) : (
@@ -226,7 +226,7 @@ export default function SearchResults({ results, activeFilter, query, onClose, a
                 </div>
 
                 {/* Badge Type */}
-                <span className="text-[9px] font-poppins font-bold bg-[#1c380e]/10 text-[#1c380e] px-2.5 py-1 rounded border border-[#1c380e]/15 uppercase shrink-0 select-none">
+                <span className="text-[9px] font-poppins font-bold bg-[#1c380e]/10 text-[#1c380e] px-2.5 py-1 rounded border border-[#1c380e]/20 uppercase shrink-0 select-none">
                   {article.type === "chronique" ? "Chronique" : "Article"}
                 </span>
               </div>

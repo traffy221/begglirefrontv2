@@ -96,7 +96,10 @@ export default function SearchOverlay({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-ivory/98 backdrop-blur-md flex flex-col p-6 md:p-12 overflow-y-auto animate-slide-down">
+    <div 
+      style={{ backgroundColor: "rgba(251, 251, 249, 0.98)" }}
+      className="fixed inset-0 z-50 backdrop-blur-md flex flex-col p-6 md:p-12 overflow-y-auto animate-slide-down"
+    >
       
       {/* Header bar: Logo + Centered Input + Close button */}
       <div className="w-full max-w-5xl mx-auto flex items-center justify-between gap-4 border-b border-primary-soft/10 pb-4">
