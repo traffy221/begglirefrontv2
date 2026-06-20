@@ -31,8 +31,9 @@ export const CartProvider = ({ children }) => {
   }, [items, isRehydrated]);
 
   // Add item to cart
-  const addItem = (product, type) => {
+  const addItem = (product, type, quantityToAdd = 1) => {
     if (!product || !product.id) return;
+    const qtyToAdd = Math.max(1, quantityToAdd);
 
     setItems((prevItems) => {
       // Normalize properties to support book vs supply variations from backend routes
@@ -49,7 +50,7 @@ export const CartProvider = ({ children }) => {
         // Increment quantity of existing item
         return prevItems.map((item, idx) => {
           if (idx === existingIndex) {
-            const nextQty = item.quantity + 1;
+            const nextQty = item.quantity + qtyToAdd;
             // Cap at stock if stock is valid
             const finalQty = normalizedStock > 0 ? Math.min(nextQty, normalizedStock) : nextQty;
             return { ...item, quantity: finalQty };
@@ -66,7 +67,7 @@ export const CartProvider = ({ children }) => {
         price: normalizedPrice,
         image: normalizedImage,
         stock: normalizedStock,
-        quantity: 1,
+        quantity: Math.min(qtyToAdd, normalizedStock > 0 ? normalizedStock : qtyToAdd),
       };
 
       return [...prevItems, newItem];

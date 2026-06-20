@@ -1,388 +1,433 @@
-import { useState, useEffect, useMemo } from "react";
-import { useSearchParams, Link } from "react-router-dom";
-import { Search, Eye, Filter, ArrowUpDown } from "lucide-react";
-import { useBooks, useCategories, useBooksByCategory, useSearch } from "../hooks/useQueries";
-import { IMAGE_URL } from "../api/client";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import { useSearchParams } from "react-router-dom";
+import { useBooks, useCategories, useSearch } from "../hooks/useQueries";
+import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
 
-const Listing = () => {
+// Modular Subcomponents
+import CatalogueHero from "../components/catalogue/CatalogueHero";
+import FilterSidebar from "../components/catalogue/FilterSidebar";
+import FilterDrawer from "../components/catalogue/FilterDrawer";
+import MagazineLayout from "../components/catalogue/MagazineLayout";
+import GridLayout from "../components/catalogue/GridLayout";
+import ListLayout from "../components/catalogue/ListLayout";
+import InfiniteScrollSentinel from "../components/catalogue/InfiniteScrollSentinel";
+import QuickViewModal from "../components/catalogue/QuickViewModal";
+
+export default function Listing() {
   const [searchParams, setSearchParams] = useSearchParams();
   const searchParamQuery = searchParams.get("search") || "";
-  const categoryParam = searchParams.get("category") || "all";
 
-  // Filter States
-  const [selectedCategory, setSelectedCategory] = useState(categoryParam);
-  const [maxPrice, setMaxPrice] = useState(25000);
-  const [sortBy, setSortBy] = useState("recent"); // 'recent' | 'price-asc' | 'price-desc'
-  const [searchInput, setSearchInput] = useState(searchParamQuery);
-  const [activeSearch, setActiveSearch] = useState(searchParamQuery);
+  const { isAuthenticated } = useAuth();
+  const { addItem } = useCart();
 
-  // Sync state with URL search param
-  useEffect(() => {
-    setSearchInput(searchParamQuery);
-    setActiveSearch(searchParamQuery);
-    if (searchParamQuery) {
-      setSelectedCategory("all"); // Reset category if search is triggered from url
+  // Quick View Modal States
+  const [selectedBook, setSelectedBook] = useState(null);
+  const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
+
+  const handleQuickView = useCallback((book) => {
+    setSelectedBook(book);
+    setIsQuickViewOpen(true);
+  }, []);
+
+  // 1. Layout Mode with Local Storage and Transition States
+  const [layoutMode, setLayoutMode] = useState(() => {
+    if (typeof window !== "undefined" && window.localStorage) {
+      return localStorage.getItem("begglire_catalogue_view") || "magazine";
     }
+    return "magazine";
+  });
+  const [renderedLayout, setRenderedLayout] = useState(layoutMode);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  const handleLayoutChange = useCallback((newLayout) => {
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setRenderedLayout(newLayout);
+      setLayoutMode(newLayout);
+      setIsTransitioning(false);
+    }, 150);
+  }, []);
+
+  // 2. Search & Mobile Drawer States
+  const [searchQuery, setSearchQuery] = useState(searchParamQuery);
+  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
+
+  // Sync search query with URL search param changes
+  useEffect(() => {
+    setSearchQuery(searchParamQuery);
   }, [searchParamQuery]);
 
+  // 3. Filter States
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedEtats, setSelectedEtats] = useState([]);
+  const [priceRange, setPriceRange] = useState({ min: 0, max: 50000 });
+  const [selectedLangues, setSelectedLangues] = useState([]);
+  const [stockOnly, setStockOnly] = useState(true); // default true
+  const [sortBy, setSortBy] = useState("recent"); // default 'recent'
+
+  // Reset page to 1 whenever filters change
+  const [page, setPage] = useState(1);
   useEffect(() => {
-    if (categoryParam) {
-      setSelectedCategory(categoryParam);
-      if (categoryParam !== "all") {
-        setActiveSearch("");
-        setSearchInput("");
-      }
-    }
-  }, [categoryParam]);
+    setPage(1);
+  }, [selectedCategories, selectedEtats, priceRange, selectedLangues, stockOnly, sortBy, searchQuery]);
 
-  // Queries
-  const { data: categoriesData } = useCategories();
-  
-  // Data Fetching Strategies based on active states
-  const { data: allBooksData, isLoading: allLoading } = useBooks("tous");
-  const { data: catBooksData, isLoading: catLoading } = useBooksByCategory(
-    selectedCategory !== "all" ? selectedCategory : null
-  );
-  const { data: searchBooksData, isLoading: searchLoading } = useSearch(
-    activeSearch ? activeSearch : ""
-  );
+  // 4. API Data Fetching
+  const { data: allBooksResponse, isLoading: allBooksLoading } = useBooks("tous");
+  const { data: searchBooksResponse, isLoading: searchBooksLoading } = useSearch(searchQuery || "");
 
-  // Extract Books
+  const categoriesQuery = useCategories();
+  const categories = categoriesQuery.data?.data || categoriesQuery.data || [];
+
+  // Extract primary books list (empty query -> all books, active query -> searched books)
   const books = useMemo(() => {
-    let list = [];
-    if (activeSearch) {
-      list = searchBooksData?.data?.data || searchBooksData?.data || searchBooksData || [];
-    } else if (selectedCategory !== "all") {
-      list = catBooksData?.data?.data || catBooksData?.data || catBooksData || [];
-    } else {
-      list = allBooksData?.data?.data || allBooksData?.data || allBooksData || [];
-    }
+    const list = searchQuery
+      ? (searchBooksResponse?.data?.data || searchBooksResponse?.data || searchBooksResponse)
+      : (allBooksResponse?.data?.data || allBooksResponse?.data || allBooksResponse);
     return Array.isArray(list) ? list : [];
-  }, [activeSearch, selectedCategory, allBooksData, catBooksData, searchBooksData]);
+  }, [searchQuery, allBooksResponse, searchBooksResponse]);
 
-  // Categories list
-  const categories = categoriesData?.data || categoriesData || [];
+  // Calculate dynamic book counts per category BEFORE applying category filters
+  const categoryCounts = useMemo(() => {
+    const counts = {};
+    categories.forEach(c => { counts[c.id] = 0; });
+    books.forEach(b => {
+      const catId = b.category_id || b.category?.id;
+      if (catId) {
+        counts[catId] = (counts[catId] || 0) + 1;
+      }
+    });
+    return counts;
+  }, [books, categories]);
 
-  // Filter and Sort in-memory
-  const processedBooks = useMemo(() => {
-    // 1. Filter by price
-    let result = books.filter((book) => {
-      const price = Number(book.prix_vente || book.prix || 0);
-      return price <= maxPrice;
+  // 5. Apply In-Memory Filters & Sort
+  const filteredBooks = useMemo(() => {
+    let result = [...books];
+
+    // Filter by categories
+    if (selectedCategories.length > 0) {
+      result = result.filter(b => {
+        const catId = b.category_id || b.category?.id;
+        return selectedCategories.includes(catId);
+      });
+    }
+
+    // Filter by book states
+    if (selectedEtats.length > 0) {
+      result = result.filter(b => {
+        const bookEtat = (b.etat || b.etat_livre || "").toLowerCase().replace("_", "");
+        return selectedEtats.some(filterEtat => {
+          const f = filterEtat.toLowerCase().replace("_", "");
+          // Match "Neuf" exactly, or group all others under "Occasion"
+          if (f === "neuf") return bookEtat === "neuf";
+          return bookEtat !== "neuf";
+        });
+      });
+    }
+
+    // Filter by price range
+    result = result.filter(b => {
+      const price = Number(b.prix_vente !== undefined ? b.prix_vente : (b.prix !== undefined ? b.prix : 0));
+      return price >= priceRange.min && price <= priceRange.max;
     });
 
-    // 2. Sort
-    result.sort((a, b) => {
-      const priceA = Number(a.prix_vente || a.prix || 0);
-      const priceB = Number(b.prix_vente || b.prix || 0);
-      
-      if (sortBy === "price-asc") return priceA - priceB;
-      if (sortBy === "price-desc") return priceB - priceA;
-      
-      // Default: recent (newest ID first)
-      return b.id - a.id;
-    });
+    // Filter by language
+    if (selectedLangues.length > 0) {
+      result = result.filter(b => {
+        const lang = (b.langue || "Français").toLowerCase();
+        return selectedLangues.some(l => l.toLowerCase() === lang);
+      });
+    }
+
+    // Filter by stock
+    if (stockOnly) {
+      result = result.filter(b => {
+        const stock = Number(b.stock !== undefined ? b.stock : (b.quantite !== undefined ? b.quantite : 1));
+        return stock > 0;
+      });
+    }
+
+    // Apply sorting
+    switch (sortBy) {
+      case "recent":
+        result.sort((a, b) => b.id - a.id);
+        break;
+      case "prix_asc":
+        result.sort((a, b) => {
+          const priceA = Number(a.prix_vente !== undefined ? a.prix_vente : (a.prix !== undefined ? a.prix : 0));
+          const priceB = Number(b.prix_vente !== undefined ? b.prix_vente : (b.prix !== undefined ? b.prix : 0));
+          return priceA - priceB;
+        });
+        break;
+      case "prix_desc":
+        result.sort((a, b) => {
+          const priceA = Number(a.prix_vente !== undefined ? a.prix_vente : (a.prix !== undefined ? a.prix : 0));
+          const priceB = Number(b.prix_vente !== undefined ? b.prix_vente : (b.prix !== undefined ? b.prix : 0));
+          return priceB - priceA;
+        });
+        break;
+      case "popularite":
+        result.sort((a, b) => {
+          const viewsA = Number(a.views_count || a.nb_vues || 0);
+          const viewsB = Number(b.views_count || b.nb_vues || 0);
+          return viewsB - viewsA;
+        });
+        break;
+      default:
+        break;
+    }
 
     return result;
-  }, [books, maxPrice, sortBy]);
+  }, [books, selectedCategories, selectedEtats, priceRange, selectedLangues, stockOnly, sortBy]);
 
-  // Loading state
-  const isLoading = allLoading || catLoading || searchLoading;
+  // 6. Pagination & Infinite Scroll Logic
+  const itemsPerPage = 12;
+  const paginatedBooks = useMemo(() => {
+    return filteredBooks.slice(0, page * itemsPerPage);
+  }, [filteredBooks, page]);
 
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    setActiveSearch(searchInput);
-    setSearchParams(searchInput ? { search: searchInput } : {});
-    setSelectedCategory("all");
-  };
+  const hasMore = paginatedBooks.length < filteredBooks.length;
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
-  const selectCategoryHandler = (catId) => {
-    setSelectedCategory(catId);
-    setActiveSearch("");
-    setSearchInput("");
+  const loadMore = useCallback(() => {
+    if (isLoadingMore || !hasMore) return;
+    setIsLoadingMore(true);
+    // Simulate latency (800ms) to display premium skeletons
+    setTimeout(() => {
+      setPage(prev => prev + 1);
+      setIsLoadingMore(false);
+    }, 800);
+  }, [isLoadingMore, hasMore]);
+
+  // IntersectionObserver implementation
+  const observerRef = useRef();
+  const sentinelRef = useCallback((node) => {
+    if (observerRef.current) observerRef.current.disconnect();
+    observerRef.current = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && hasMore && !isLoadingMore) {
+        loadMore();
+      }
+    }, { threshold: 0.1 });
+    if (node) observerRef.current.observe(node);
+  }, [hasMore, isLoadingMore, loadMore]);
+
+  // Reset Filters logic
+  const handleResetAllFilters = useCallback(() => {
+    setSelectedCategories([]);
+    setSelectedEtats([]);
+    setPriceRange({ min: 0, max: 50000 });
+    setSelectedLangues([]);
+    setStockOnly(true);
+    setSortBy("recent");
+    setSearchQuery("");
     setSearchParams({});
-  };
+  }, [setSearchParams]);
 
-  const getImgUrl = (path) => {
-    if (!path) return "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=400";
-    if (path.startsWith("http")) return path;
-    return `${IMAGE_URL}/${path}`;
-  };
+  const hasActiveFilters = useMemo(() => {
+    return (
+      selectedCategories.length > 0 ||
+      selectedEtats.length > 0 ||
+      priceRange.min > 0 ||
+      priceRange.max < 50000 ||
+      selectedLangues.length > 0 ||
+      !stockOnly ||
+      sortBy !== "recent" ||
+      searchQuery !== ""
+    );
+  }, [selectedCategories, selectedEtats, priceRange, selectedLangues, stockOnly, sortBy, searchQuery]);
+
+  const activeFiltersCount = useMemo(() => {
+    let count = 0;
+    if (selectedCategories.length > 0) count++;
+    if (selectedEtats.length > 0) count++;
+    if (priceRange.min > 0 || priceRange.max < 50000) count++;
+    if (selectedLangues.length > 0) count++;
+    if (!stockOnly) count++;
+    if (sortBy !== "recent") count++;
+    if (searchQuery !== "") count++;
+    return count;
+  }, [selectedCategories, selectedEtats, priceRange, selectedLangues, stockOnly, sortBy, searchQuery]);
+
+  // Global Cart Addition Dispatcher
+  const handleAddToCart = useCallback((book) => {
+    const price = Number(book.prix_vente !== undefined ? book.prix_vente : (book.prix !== undefined ? book.prix : 0));
+    addItem({ ...book, prix_vente: price }, "book");
+
+    // Dispatch event to Layout.jsx
+    window.dispatchEvent(new CustomEvent("show-cart-toast", {
+      detail: {
+        titre: book.titre,
+        cover: book.image || book.cover || book.image_link,
+        quantite: 1
+      }
+    }));
+  }, [addItem]);
+
+  const isPageLoading = allBooksLoading || (searchQuery && searchBooksLoading);
 
   return (
-    <div className="container mx-auto px-6 md:px-12 max-w-7xl py-12">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-        
-        {/* ==========================================
-           1. SIDEBAR - FIXED LEFT FILTERS (3/12 cols)
-           ========================================== */}
-        <aside className="lg:col-span-3 space-y-8 lg:sticky lg:top-32 h-fit">
-          <div className="bg-white rounded-3xl p-6 border border-primary-soft/20 shadow-sm space-y-6">
-            <div className="flex items-center space-x-2 border-b border-primary-soft/20 pb-4">
-              <Filter className="text-primary-dark" size={18} />
-              <h2 className="font-serif font-bold text-lg text-charcoal">Filtres de recherche</h2>
-            </div>
+    <div className="w-full min-h-screen bg-ivory pb-12">
+      {/* 1. Hero Compact & sticky search controls bar */}
+      <CatalogueHero
+        searchQuery={searchQuery}
+        onSearchChange={(val) => {
+          setSearchQuery(val);
+          setSearchParams(val ? { search: val } : {});
+        }}
+        resultsCount={filteredBooks.length}
+        activeLayout={renderedLayout}
+        setActiveLayout={handleLayoutChange}
+        onOpenMobileFilters={() => setIsMobileFiltersOpen(true)}
+        activeFiltersCount={activeFiltersCount}
+      />
 
-            {/* Category selection */}
-            <div className="space-y-3">
-              <h3 className="font-poppins uppercase tracking-wider text-[10px] font-bold text-gray">
-                Catégories
-              </h3>
-              <div className="flex flex-col space-y-1">
-                <button
-                  onClick={() => selectCategoryHandler("all")}
-                  className={`text-left text-sm py-1.5 px-3 rounded-lg transition-colors ${
-                    selectedCategory === "all"
-                      ? "bg-primary-soft/30 text-primary-dark font-semibold"
-                      : "text-charcoal hover:bg-primary-soft/10"
-                  }`}
-                >
-                  Tous les livres
-                </button>
-                {categories.map((cat) => (
-                  <button
-                    key={cat.id}
-                    onClick={() => selectCategoryHandler(cat.id)}
-                    className={`text-left text-sm py-1.5 px-3 rounded-lg transition-colors ${
-                      selectedCategory === cat.id
-                        ? "bg-primary-soft/30 text-primary-dark font-semibold"
-                        : "text-charcoal hover:bg-primary-soft/10"
-                    }`}
-                  >
-                    {cat.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Price Slider */}
-            <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <h3 className="font-poppins uppercase tracking-wider text-[10px] font-bold text-gray">
-                  Prix maximum
-                </h3>
-                <span className="text-xs font-bold text-primary-dark">
-                  {maxPrice.toLocaleString()} CFA
-                </span>
-              </div>
-              <input
-                type="range"
-                min="1000"
-                max="30000"
-                step="500"
-                value={maxPrice}
-                onChange={(e) => setMaxPrice(Number(e.target.value))}
-                className="w-full h-1.5 bg-primary-soft/40 rounded-lg appearance-none cursor-pointer accent-primary"
-              />
-              <div className="flex justify-between text-[10px] text-gray/50">
-                <span>1 000 CFA</span>
-                <span>30 000 CFA</span>
-              </div>
-            </div>
-
-            {/* Sort Dropdown */}
-            <div className="space-y-3">
-              <h3 className="font-poppins uppercase tracking-wider text-[10px] font-bold text-gray flex items-center">
-                <ArrowUpDown size={12} className="mr-1" /> Trier par
-              </h3>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="w-full bg-ivory text-sm border border-primary-soft/30 rounded-lg p-2.5 outline-none text-charcoal"
-              >
-                <option value="recent">Nouveautés d'abord</option>
-                <option value="price-asc">Prix : croissant</option>
-                <option value="price-desc">Prix : décroissant</option>
-              </select>
-            </div>
-          </div>
-        </aside>
-
-        {/* ==========================================
-           2. MAIN AREA - EDITORIAL CATALOG (9/12 cols)
-           ========================================== */}
-        <main className="lg:col-span-9 space-y-8">
+      {/* 2. Main Content Grid (Sidebar + Listings) */}
+      <div className="container mx-auto px-6 md:px-12 max-w-7xl pt-8">
+        <div className="flex flex-col lg:flex-row gap-10 items-start">
           
-          {/* Main search bar */}
-          <form onSubmit={handleSearchSubmit} className="flex bg-white border border-primary-soft/20 rounded-2xl shadow-sm p-2">
-            <div className="flex items-center flex-grow pl-3">
-              <Search className="text-gray/50 mr-2" size={20} />
-              <input
-                type="text"
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-                placeholder="Rechercher par titre, auteur, genre..."
-                className="w-full bg-transparent text-sm text-charcoal outline-none placeholder-gray/40"
-              />
-            </div>
-            <button
-              type="submit"
-              className="bg-primary hover:bg-primary-dark text-white text-sm font-semibold rounded-xl px-6 py-2.5 transition-colors"
-            >
-              Rechercher
-            </button>
-          </form>
+          {/* Desktop Filter Sidebar */}
+          <FilterSidebar
+            categories={categories}
+            selectedCategories={selectedCategories}
+            setSelectedCategories={setSelectedCategories}
+            selectedEtats={selectedEtats}
+            setSelectedEtats={setSelectedEtats}
+            priceRange={priceRange}
+            setPriceRange={setPriceRange}
+            selectedLangues={selectedLangues}
+            setSelectedLangues={setSelectedLangues}
+            stockOnly={stockOnly}
+            setStockOnly={setStockOnly}
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+            onResetAll={handleResetAllFilters}
+            hasActiveFilters={hasActiveFilters}
+            resultsCount={filteredBooks.length}
+            categoryCounts={categoryCounts}
+          />
 
-          {/* Active Search & Category Status */}
-          {(activeSearch || selectedCategory !== "all") && (
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-xs text-gray uppercase tracking-wider">Résultats pour :</span>
-              {activeSearch && (
-                <span className="bg-white px-3 py-1 rounded-full text-xs font-semibold border border-primary-soft/20 text-charcoal">
-                  Recherche: "{activeSearch}"
-                </span>
-              )}
-              {selectedCategory !== "all" && (
-                <span className="bg-white px-3 py-1 rounded-full text-xs font-semibold border border-primary-soft/20 text-primary-dark">
-                  Catégorie: {categories.find(c => c.id === selectedCategory)?.name || "Sélectionnée"}
-                </span>
-              )}
-              <button
-                onClick={() => {
-                  setSelectedCategory("all");
-                  setActiveSearch("");
-                  setSearchInput("");
-                  setSearchParams({});
-                }}
-                className="text-xs text-primary font-bold hover:underline ml-2"
-              >
-                Réinitialiser
-              </button>
-            </div>
-          )}
+          {/* Mobile Filter Drawer */}
+          <FilterDrawer
+            isOpen={isMobileFiltersOpen}
+            onClose={() => setIsMobileFiltersOpen(false)}
+            categories={categories}
+            selectedCategories={selectedCategories}
+            setSelectedCategories={setSelectedCategories}
+            selectedEtats={selectedEtats}
+            setSelectedEtats={setSelectedEtats}
+            priceRange={priceRange}
+            setPriceRange={setPriceRange}
+            selectedLangues={selectedLangues}
+            setSelectedLangues={setSelectedLangues}
+            stockOnly={stockOnly}
+            setStockOnly={setStockOnly}
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+            onResetAll={handleResetAllFilters}
+            hasActiveFilters={hasActiveFilters}
+            resultsCount={filteredBooks.length}
+            categoryCounts={categoryCounts}
+          />
 
-          {/* Loading Indicator */}
-          {isLoading ? (
-            <div className="flex flex-col items-center justify-center py-20 space-y-4">
-              <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-primary-dark" />
-              <p className="font-serif italic text-gray">Exploration des pages en cours...</p>
-            </div>
-          ) : processedBooks.length > 0 ? (
-            
-            /* EDITORIAL MAGAZINE LAYOUT - ALTERNATING RHYTHM */
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-              {processedBooks.map((book, idx) => {
-                // Alternating structure: every 4th element (idx % 4 === 0) is a large horizontal card
-                const isFeatured = idx % 4 === 0;
+          {/* Catalog Listings (flex-1) */}
+          <div className="flex-grow w-full space-y-8 min-h-[50vh]">
+            {isPageLoading ? (
+              // Initial Loading Skeletons
+              <div className="w-full pt-10">
+                <InfiniteScrollSentinel
+                  isLoadingMore={true}
+                  hasMore={false}
+                  activeLayout={renderedLayout}
+                />
+              </div>
+            ) : filteredBooks.length > 0 ? (
+              // Active listings layout with fade transition
+              <div className={`transition-opacity duration-150 ${isTransitioning ? "opacity-0" : "opacity-100"}`}>
+                {renderedLayout === "magazine" && (
+                  <MagazineLayout
+                    books={paginatedBooks}
+                    onQuickView={handleQuickView}
+                    onAddToCart={handleAddToCart}
+                  />
+                )}
+                {renderedLayout === "grid" && (
+                  <GridLayout
+                    books={paginatedBooks}
+                    onAddToCart={handleAddToCart}
+                    isAuthenticated={isAuthenticated}
+                    onQuickView={handleQuickView}
+                  />
+                )}
+                {renderedLayout === "list" && (
+                  <ListLayout
+                    books={paginatedBooks}
+                    onAddToCart={handleAddToCart}
+                    isAuthenticated={isAuthenticated}
+                  />
+                )}
 
-                if (isFeatured) {
-                  return (
-                    <div
-                      key={book.id}
-                      className="col-span-full bg-white rounded-3xl p-6 border border-primary-soft/20 shadow-sm hover:shadow-md transition-shadow group grid grid-cols-1 md:grid-cols-12 gap-6 items-center"
-                    >
-                      <Link to={`/catalogue/${book.id}`} className="md:col-span-4 h-64 md:h-80 overflow-hidden rounded-2xl relative block">
-                        <img
-                          src={getImgUrl(book.image)}
-                          alt={book.titre}
-                          className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500"
-                        />
-                        <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-full p-2 text-charcoal shadow opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Eye size={16} />
-                        </div>
-                      </Link>
+                {/* Infinite scroll sentinel */}
+                <InfiniteScrollSentinel
+                  sentinelRef={sentinelRef}
+                  hasMore={hasMore}
+                  isLoadingMore={isLoadingMore}
+                  activeLayout={renderedLayout}
+                />
+              </div>
+            ) : (
+              // Empty Result State
+              <div className="w-full pt-16 flex items-center justify-center">
+                {renderEmptyState(handleResetAllFilters, handleLayoutChange)}
+              </div>
+            )}
+          </div>
 
-                      <div className="md:col-span-8 flex flex-col justify-between h-full py-2 space-y-4">
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <span className="font-poppins uppercase tracking-wider text-[10px] font-bold text-primary">
-                              À l'affiche
-                            </span>
-                            <span className="text-xs text-gray/50">
-                              Publié par {book.owner_user?.fullname || "Libraire"}
-                            </span>
-                          </div>
-                          <h3 className="font-serif font-bold text-2xl md:text-3xl text-charcoal group-hover:text-primary transition-colors">
-                            <Link to={`/catalogue/${book.id}`}>{book.titre}</Link>
-                          </h3>
-                          <p className="text-gray text-base font-medium">Par {book.auteur}</p>
-                          <p className="text-gray/80 text-sm leading-relaxed line-clamp-3">
-                            {book.description || "Découvrez cet ouvrage exceptionnel mis en avant dans notre catalogue. Une pièce de lecture remarquable sélectionnée spécialement pour vous."}
-                          </p>
-                        </div>
+        </div>
+      </div>
 
-                        <div className="flex items-center justify-between pt-2 border-t border-primary-soft/10">
-                          <span className="text-2xl font-serif font-bold text-primary-dark">
-                            {Number(book.prix_vente).toLocaleString()} CFA
-                          </span>
-                          <Link
-                            to={`/catalogue/${book.id}`}
-                            className="bg-primary hover:bg-primary-dark text-white text-xs font-bold px-5 py-2.5 rounded-xl transition-all"
-                          >
-                            Consulter la fiche
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                }
+      {/* Centralized Quick View Modal */}
+      <QuickViewModal
+        book={selectedBook}
+        isOpen={isQuickViewOpen}
+        onClose={() => setIsQuickViewOpen(false)}
+        onAddToCart={handleAddToCart}
+      />
+    </div>
+  );
+}
 
-                // Compact layout card for other books
-                return (
-                  <div
-                    key={book.id}
-                    className="col-span-1 bg-white rounded-2xl p-4 border border-primary-soft/10 shadow-sm hover:shadow-md transition-shadow group flex flex-col justify-between h-full"
-                  >
-                    <div className="space-y-4">
-                      <Link to={`/catalogue/${book.id}`} className="h-56 overflow-hidden rounded-xl relative block bg-ivory">
-                        <img
-                          src={getImgUrl(book.image)}
-                          alt={book.titre}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                        <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-full p-2 text-charcoal shadow opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Eye size={14} />
-                        </div>
-                      </Link>
-
-                      <div className="space-y-1">
-                        <span className="font-poppins uppercase tracking-wider text-[9px] font-bold text-gray/50 block">
-                          {book.category?.name || "Livre"}
-                        </span>
-                        <h4 className="font-serif font-bold text-base text-charcoal line-clamp-1 group-hover:text-primary transition-colors">
-                          <Link to={`/catalogue/${book.id}`}>{book.titre}</Link>
-                        </h4>
-                        <p className="text-xs text-gray">{book.auteur}</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between pt-4 mt-4 border-t border-primary-soft/10">
-                      <span className="font-serif font-bold text-primary-dark text-sm md:text-base">
-                        {Number(book.prix_vente).toLocaleString()} CFA
-                      </span>
-                      <Link
-                        to={`/catalogue/${book.id}`}
-                        className="text-xs font-bold text-primary hover:text-primary-dark"
-                      >
-                        Voir plus
-                      </Link>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="bg-white rounded-3xl p-16 text-center text-gray flex flex-col items-center justify-center border border-primary-soft/20 font-serif">
-              <p className="text-lg">Aucun livre ne correspond à vos filtres.</p>
-              <button
-                onClick={() => {
-                  setSelectedCategory("all");
-                  setMaxPrice(25000);
-                  setSortBy("recent");
-                  setActiveSearch("");
-                  setSearchInput("");
-                  setSearchParams({});
-                }}
-                className="mt-4 bg-primary text-white text-xs font-semibold px-6 py-2.5 rounded-lg hover:bg-primary-dark transition-all"
-              >
-                Réinitialiser les filtres
-              </button>
-            </div>
-          )}
-        </main>
+// ==========================================================================
+// EMPTY STATE LAYOUT
+// ==========================================================================
+function renderEmptyState(onReset, onLayoutChange) {
+  return (
+    <div className="bg-white rounded-3xl p-12 md:p-16 text-center text-gray flex flex-col items-center justify-center border border-primary-soft/10 shadow-sm max-w-lg mx-auto space-y-6 select-none animate-fade-in">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="w-20 h-20 text-[#1c380e]/40">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+      </svg>
+      <div className="space-y-2">
+        <h3 className="font-serif font-bold text-xl text-charcoal">Aucun livre ne correspond à vos filtres</h3>
+        <p className="text-xs text-gray/70 leading-relaxed max-w-xs">
+          Essayez d'élargir votre recherche ou de modifier vos critères de filtrage.
+        </p>
+      </div>
+      <div className="flex flex-col sm:flex-row gap-3 pt-2 w-full sm:w-auto">
+        <button
+          onClick={onReset}
+          className="bg-transparent border border-[#1c380e] text-[#1c380e] hover:bg-[#1c380e] hover:text-white px-6 py-2.5 rounded-xl text-xs font-poppins font-bold uppercase tracking-wider transition-all duration-300 active:scale-95"
+        >
+          Réinitialiser les filtres
+        </button>
+        <button
+          onClick={() => {
+            onReset();
+            onLayoutChange("magazine");
+          }}
+          className="bg-[#1c380e] hover:bg-[#2c4e1d] text-white px-6 py-2.5 rounded-xl text-xs font-poppins font-bold uppercase tracking-wider transition-all duration-300 shadow active:scale-95"
+        >
+          Voir tous les livres
+        </button>
       </div>
     </div>
   );
-};
-
-export default Listing;
+}
