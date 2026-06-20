@@ -1,10 +1,12 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Header from "./Header";
 import Footer from "./Footer";
+import ToastCart from "../book-detail/ToastCart";
 
 const Layout = () => {
   const { pathname } = useLocation();
+  const [activeToast, setActiveToast] = useState(null);
 
   // Scroll restoration on route changes
   useEffect(() => {
@@ -16,6 +18,17 @@ const Layout = () => {
       });
     }
   }, [pathname]);
+
+  // Cart toast notification event listener
+  useEffect(() => {
+    const handleShowToast = (e) => {
+      setActiveToast(e.detail);
+    };
+    window.addEventListener("show-cart-toast", handleShowToast);
+    return () => {
+      window.removeEventListener("show-cart-toast", handleShowToast);
+    };
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen bg-ivory text-charcoal">
@@ -29,6 +42,11 @@ const Layout = () => {
 
       {/* Editorial Premium Footer */}
       <Footer />
+
+      {/* Global Toast Cart Notification */}
+      {activeToast && (
+        <ToastCart toast={activeToast} onClose={() => setActiveToast(null)} />
+      )}
     </div>
   );
 };
