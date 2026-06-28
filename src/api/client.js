@@ -454,7 +454,7 @@ apiClient.defaults.adapter = async (config) => {
         id: Math.random(),
         numero: ch.chapters_count,
         title: body.title || `Chapitre ${ch.chapters_count}`,
-        content: body.content || ""
+        pages: [{ content: body.content || "" }]
       };
       mockDb.mockChapters[ch.reference].push(newCap);
     }

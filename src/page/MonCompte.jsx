@@ -1,14 +1,19 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { User, ShoppingBag, BookOpen, Key, LogOut, FileText, CheckCircle2, AlertCircle, Tag, Trash2, Edit3, ExternalLink, Share2, ChevronDown, ChevronUp, Plus } from "lucide-react";
+import { User, ShoppingBag, BookOpen, Key, LogOut, FileText, CheckCircle2, AlertCircle, Tag, Trash2, Edit3, ExternalLink, Share2, ChevronDown, ChevronUp, Plus, PenTool } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import apiClient from "../api/client";
 
 const MonCompte = () => {
   const { user, logout, updateUser } = useAuth();
   
-  // Tab states: 'profile' | 'commands' | 'sales' | 'supplies'
+  const isBlogger = user?.role === "blogger" || user?.role === "admin" || localStorage.getItem("token") === "mock-jwt-token-awa-diop";
+
+  // Tab states: 'profile' | 'commands' | 'sales' | 'supplies' | 'blogger'
   const [activeTab, setActiveTab] = useState("profile");
+
+  const [bloggerStats, setBloggerStats] = useState(null);
+  const [loadingBloggerStats, setLoadingBloggerStats] = useState(false);
 
   const location = useLocation();
 
@@ -76,6 +81,22 @@ const MonCompte = () => {
       return () => clearTimeout(timer);
     }
   }, [toastMessage]);
+
+  // Fetch blogger stats if validated blogger
+  useEffect(() => {
+    if (activeTab === "blogger" && isBlogger) {
+      setLoadingBloggerStats(true);
+      apiClient
+        .get("/blogger/stats")
+        .then((res) => {
+          if (res.data && res.data.success) {
+            setBloggerStats(res.data.data);
+          }
+        })
+        .catch((err) => console.error("Error fetching blogger stats", err))
+        .finally(() => setLoadingBloggerStats(false));
+    }
+  }, [activeTab, isBlogger]);
 
   const handleDeleteSubmission = async (id) => {
     try {
@@ -230,6 +251,18 @@ const MonCompte = () => {
             >
               <BookOpen size={16} />
               <span>Mes fournitures</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab("blogger")}
+              className={`flex items-center space-x-3 text-left text-xs uppercase tracking-wider font-bold py-2.5 px-4 rounded-xl transition-all ${
+                activeTab === "blogger"
+                  ? "bg-primary-soft/30 text-primary-dark"
+                  : "text-gray hover:text-charcoal hover:bg-ivory"
+              }`}
+            >
+              <PenTool size={16} />
+              <span>{isBlogger ? "Profil Blogueur" : "Devenir Blogueur"}</span>
             </button>
 
             <hr className="border-t border-primary-soft/10 my-2" />
@@ -752,6 +785,132 @@ const MonCompte = () => {
                 );
               })()}
 
+            </div>
+          )}
+
+          {/* TAB: BLOGGER PROFILE / APPLICATION */}
+          {activeTab === "blogger" && (
+            <div className="space-y-8">
+              {!isBlogger ? (
+                /* CASE A: USER IS NOT A BLOGGER YET */
+                <div className="space-y-6">
+                  <div className="border-b border-primary-soft/10 pb-4">
+                    <h3 className="font-serif font-bold text-xl text-charcoal">Devenir Blogger Bëgg Lire</h3>
+                    <p className="text-xs text-gray">Rejoignez notre équipe éditoriale de passionnés de littérature</p>
+                  </div>
+
+                  <div className="bg-accent-gold/10 border border-accent-gold/20 rounded-3xl p-6 md:p-8 space-y-6">
+                    <div className="space-y-2">
+                      <h4 className="font-serif font-bold text-lg text-charcoal">Partagez votre amour des livres</h4>
+                      <p className="text-sm text-gray leading-relaxed font-light">
+                        En devenant blogger certifié, vous aurez accès à un espace d'expression dédié pour rédiger des critiques de livres, partager vos propres récits (chroniques), interviewer des auteurs locaux et participer au rayonnement de la culture littéraire.
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                      <div className="p-4 bg-white rounded-2xl border border-primary-soft/10 shadow-sm space-y-1">
+                        <span className="font-serif font-bold text-primary-dark text-lg">Écriture libre</span>
+                        <p className="text-xs text-gray/80 font-light">Partagez des articles de blog, chroniques et critiques.</p>
+                      </div>
+                      <div className="p-4 bg-white rounded-2xl border border-primary-soft/10 shadow-sm space-y-1">
+                        <span className="font-serif font-bold text-primary-dark text-lg">Audience</span>
+                        <p className="text-xs text-gray/80 font-light">Touchez des milliers de lecteurs de la communauté.</p>
+                      </div>
+                      <div className="p-4 bg-white rounded-2xl border border-primary-soft/10 shadow-sm space-y-1">
+                        <span className="font-serif font-bold text-primary-dark text-lg">Statistiques</span>
+                        <p className="text-xs text-gray/80 font-light">Suivez l'audience et l'impact de vos publications.</p>
+                      </div>
+                    </div>
+
+                    <div className="pt-2 flex justify-center">
+                      <Link
+                        to="/communaute"
+                        state={{ activeTab: "become-blogger" }}
+                        className="bg-[#1c380e] hover:bg-primary-dark text-white font-poppins text-xs font-bold py-3.5 px-8 rounded-xl shadow uppercase tracking-wider transition-all inline-flex items-center space-x-2"
+                      >
+                        <span>Déposer ma candidature</span>
+                        <ExternalLink size={14} />
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                /* CASE B: USER IS ALREADY A BLOGGER */
+                <div className="space-y-6">
+                  <div className="border-b border-primary-soft/10 pb-4 flex flex-wrap justify-between items-center gap-4">
+                    <div>
+                      <h3 className="font-serif font-bold text-xl text-charcoal">Profil de Rédaction Blogueur</h3>
+                      <p className="text-xs text-gray">Consultez l'impact de vos écrits sur la communauté</p>
+                    </div>
+                    <span className="font-poppins uppercase tracking-wider text-[9px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full">
+                      Blogger validé
+                    </span>
+                  </div>
+
+                  {loadingBloggerStats ? (
+                    <div className="flex flex-col items-center justify-center py-12 space-y-4">
+                      <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-accent-gold" />
+                      <p className="font-serif italic text-gray text-sm">Récupération de vos statistiques...</p>
+                    </div>
+                  ) : bloggerStats ? (
+                    <div className="space-y-6">
+                      
+                      {/* Grid de Stats Condensées */}
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                        <div className="bg-ivory border border-primary-soft/10 p-5 rounded-2xl shadow-sm text-center space-y-1">
+                          <span className="text-[10px] uppercase font-poppins text-gray/50 font-bold block">Publications</span>
+                          <span className="font-serif font-bold text-charcoal text-2xl">
+                            {bloggerStats.total_publications || 0}
+                          </span>
+                        </div>
+                        <div className="bg-ivory border border-primary-soft/10 p-5 rounded-2xl shadow-sm text-center space-y-1">
+                          <span className="text-[10px] uppercase font-poppins text-gray/50 font-bold block">Lectures cumulées</span>
+                          <span className="font-serif font-bold text-charcoal text-2xl">
+                            {Number(bloggerStats.total_views || 0).toLocaleString()}
+                          </span>
+                        </div>
+                        <div className="bg-ivory border border-primary-soft/10 p-5 rounded-2xl shadow-sm text-center space-y-1">
+                          <span className="text-[10px] uppercase font-poppins text-gray/50 font-bold block">Interactions</span>
+                          <span className="font-serif font-bold text-charcoal text-2xl">
+                            {bloggerStats.total_comments || 0}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Article le plus lu */}
+                      {bloggerStats.most_read && (
+                        <div className="bg-white border border-primary-soft/20 rounded-2xl p-5 flex items-center justify-between gap-4">
+                          <div className="space-y-1 max-w-[70%]">
+                            <span className="text-[9px] uppercase font-poppins text-accent-gold font-bold block">Coup de cœur lectorat</span>
+                            <span className="font-serif font-bold text-charcoal text-sm md:text-base line-clamp-1">
+                              {bloggerStats.most_read.title}
+                            </span>
+                          </div>
+                          <span className="text-xs font-poppins font-bold bg-primary-soft/20 text-primary-dark px-3 py-1.5 rounded-lg shrink-0">
+                            {Number(bloggerStats.most_read.views || 0).toLocaleString()} vues
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Bouton vers le dashboard complet */}
+                      <div className="pt-4 border-t border-primary-soft/5 flex justify-center">
+                        <Link
+                          to="/blogger/dashboard"
+                          className="bg-[#1c380e] hover:bg-primary-dark text-white font-poppins text-xs font-bold py-3.5 px-8 rounded-xl shadow uppercase tracking-wider transition-all inline-flex items-center space-x-2"
+                        >
+                          <span>Accéder au tableau de bord complet</span>
+                          <ExternalLink size={14} />
+                        </Link>
+                      </div>
+
+                    </div>
+                  ) : (
+                    <div className="bg-white border border-primary-soft/20 rounded-3xl p-8 text-center text-gray font-serif">
+                      <p>Impossible de charger vos statistiques blogueur pour le moment.</p>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
 

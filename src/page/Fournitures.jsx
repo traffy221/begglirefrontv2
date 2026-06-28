@@ -1,7 +1,8 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { ShoppingBag, Eye, X, Filter, Sparkles, Check } from "lucide-react";
 import { useSupplies, useSupplyCategories } from "../hooks/useQueries";
 import { useCart } from "../context/CartContext";
+import InfiniteScrollSentinel from "../components/catalogue/InfiniteScrollSentinel";
 
 const Fournitures = () => {
   const { addItem } = useCart();
@@ -35,6 +36,44 @@ const Fournitures = () => {
       return s.category_id == selectedCategory || s.category == selectedCategory;
     });
   }, [supplies, selectedCategory]);
+
+  // Infinite Scroll & Pagination Logic
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 9;
+
+  // Reset page when category changes
+  useEffect(() => {
+    setPage(1);
+  }, [selectedCategory]);
+
+  const paginatedSupplies = useMemo(() => {
+    return filteredSupplies.slice(0, page * itemsPerPage);
+  }, [filteredSupplies, page]);
+
+  const hasMore = paginatedSupplies.length < filteredSupplies.length;
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+
+  const loadMore = useCallback(() => {
+    if (isLoadingMore || !hasMore) return;
+    setIsLoadingMore(true);
+    // Simulate premium skeletons loading latency (800ms)
+    setTimeout(() => {
+      setPage((prev) => prev + 1);
+      setIsLoadingMore(false);
+    }, 800);
+  }, [isLoadingMore, hasMore]);
+
+  // IntersectionObserver implementation
+  const observerRef = useRef();
+  const sentinelRef = useCallback((node) => {
+    if (observerRef.current) observerRef.current.disconnect();
+    observerRef.current = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && hasMore && !isLoadingMore) {
+        loadMore();
+      }
+    }, { threshold: 0.1 });
+    if (node) observerRef.current.observe(node);
+  }, [hasMore, isLoadingMore, loadMore]);
 
   const handleAddToCart = (supply) => {
     addItem(supply, "supply");
@@ -114,67 +153,78 @@ const Fournitures = () => {
           ) : filteredSupplies.length > 0 ? (
             
             /* EDITORIAL LAYOUT FOR PRODUCTS */
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-              {filteredSupplies.map((supply) => (
-                <div
-                  key={supply.id}
-                  className="bg-white rounded-2xl p-4 border border-primary-soft/10 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between h-full"
-                >
-                  <div className="space-y-4">
-                    {/* Cover Preview Area */}
-                    <div className="h-44 overflow-hidden rounded-xl relative bg-ivory flex items-center justify-center">
-                      <img
-                        src={getImgUrl(supply.image || supply.image_url)}
-                        alt={supply.nom || supply.name}
-                        className="w-full h-full object-contain p-2 group-hover:scale-103 transition-transform duration-500"
-                      />
+            <div className="space-y-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {paginatedSupplies.map((supply) => (
+                  <div
+                    key={supply.id}
+                    className="bg-white rounded-2xl p-4 border border-primary-soft/10 shadow-sm hover:shadow-md transition-all group flex flex-col justify-between h-full"
+                  >
+                    <div className="space-y-4">
+                      {/* Cover Preview Area */}
+                      <div className="h-44 overflow-hidden rounded-xl relative bg-ivory flex items-center justify-center">
+                        <img
+                          src={getImgUrl(supply.image || supply.image_url)}
+                          alt={supply.nom || supply.name}
+                          className="w-full h-full object-contain p-2 group-hover:scale-103 transition-transform duration-500"
+                        />
+                        <button
+                          onClick={() => setSelectedSupply(supply)}
+                          className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm rounded-full p-2 text-charcoal shadow opacity-0 group-hover:opacity-100 transition-opacity"
+                          aria-label="Preview"
+                        >
+                          <Eye size={12} />
+                        </button>
+                      </div>
+
+                      <div className="space-y-1">
+                        <span className="text-[9px] uppercase font-poppins font-bold text-gray/50 tracking-wider">
+                          {supply.marque || supply.brand || "Bëgg Lire"}
+                        </span>
+                        <h3 className="font-serif font-bold text-base text-charcoal line-clamp-2">
+                          {supply.nom || supply.name || "Fourniture"}
+                        </h3>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-4 mt-4 border-t border-primary-soft/10">
+                      <span className="font-serif font-bold text-primary-dark text-sm md:text-base">
+                        {Number(supply.prix || supply.price || 0).toLocaleString()} CFA
+                      </span>
+                      
                       <button
-                        onClick={() => setSelectedSupply(supply)}
-                        className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm rounded-full p-2 text-charcoal shadow opacity-0 group-hover:opacity-100 transition-opacity"
-                        aria-label="Preview"
+                        onClick={() => handleAddToCart(supply)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1 ${
+                          addedItemFeedback === supply.id
+                            ? "bg-primary text-white"
+                            : "bg-accent-gold hover:bg-accent-gold/90 text-charcoal shadow-sm"
+                        }`}
                       >
-                        <Eye size={12} />
+                        {addedItemFeedback === supply.id ? (
+                          <>
+                            <Check size={12} />
+                            <span>Ajouté</span>
+                          </>
+                        ) : (
+                          <>
+                            <ShoppingBag size={12} />
+                            <span>Prendre</span>
+                          </>
+                        )}
                       </button>
                     </div>
-
-                    <div className="space-y-1">
-                      <span className="text-[9px] uppercase font-poppins font-bold text-gray/50 tracking-wider">
-                        {supply.marque || supply.brand || "Bëgg Lire"}
-                      </span>
-                      <h3 className="font-serif font-bold text-base text-charcoal line-clamp-2">
-                        {supply.nom || supply.name || "Fourniture"}
-                      </h3>
-                    </div>
                   </div>
+                ))}
+              </div>
 
-                  <div className="flex items-center justify-between pt-4 mt-4 border-t border-primary-soft/10">
-                    <span className="font-serif font-bold text-primary-dark text-sm md:text-base">
-                      {Number(supply.prix || supply.price || 0).toLocaleString()} CFA
-                    </span>
-                    
-                    <button
-                      onClick={() => handleAddToCart(supply)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1 ${
-                        addedItemFeedback === supply.id
-                          ? "bg-primary text-white"
-                          : "bg-accent-gold hover:bg-accent-gold/90 text-charcoal shadow-sm"
-                      }`}
-                    >
-                      {addedItemFeedback === supply.id ? (
-                        <>
-                          <Check size={12} />
-                          <span>Ajouté</span>
-                        </>
-                      ) : (
-                        <>
-                          <ShoppingBag size={12} />
-                          <span>Prendre</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-                </div>
-              ))}
+              {/* Infinite scroll sentinel */}
+              <InfiniteScrollSentinel
+                sentinelRef={sentinelRef}
+                hasMore={hasMore}
+                isLoadingMore={isLoadingMore}
+                activeLayout="grid"
+                endMessage="— Vous avez vu toutes les fournitures disponibles —"
+              />
             </div>
           ) : (
             <div className="bg-white rounded-3xl p-16 text-center text-gray border border-primary-soft/20 font-serif">

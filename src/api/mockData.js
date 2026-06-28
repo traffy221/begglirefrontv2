@@ -286,31 +286,46 @@ export const mockChapters = {
       id: 11,
       numero: 1,
       title: "Chapitre 1 : L'appel de minuit",
-      content: "La nuit dakaroise était enveloppée d'une brume tiède et salée en provenance de l'Océan. Dans son petit bureau de la Médina, Birame écoutait le grincement régulier du ventilateur de plafond. L'écran de son ordinateur affichait l'ébauche de sa prochaine enquête sur le port autonome. Soudain, le téléphone fixa retentit. Une voix haletante et méconnaissable lui dit de se rendre immédiatement près des falaises de la Corniche Ouest. 'Si vous voulez savoir ce qui est arrivé à l'archiviste, venez seul.' L'appel prit fin brutalement. Birame enfila sa veste de toile, conscient que sa curiosité risquait de briser la tranquillité de sa vie bien rangée."
+      pages: [
+        { content: "La nuit dakaroise était enveloppée d'une brume tiède et salée en provenance de l'Océan. Dans son petit bureau de la Médina, Birame écoutait le grincement régulier du ventilateur de plafond. L'écran de son ordinateur affichait l'ébauche de sa prochaine enquête sur le port autonome." },
+        { content: "Soudain, le téléphone fixa retentit. Une voix haletante et méconnaissable lui dit de se rendre immédiatement près des falaises de la Corniche Ouest. 'Si vous voulez savoir ce qui est arrivé à l'archiviste, venez seul.' L'appel prit fin brutalement. Birame enfila sa veste de toile, conscient que sa curiosité risquait de briser la tranquillité de sa vie bien rangée." }
+      ]
     },
     {
       id: 12,
       numero: 2,
       title: "Chapitre 2 : Les falaises de la Corniche",
-      content: "Birame gara sa vieille Peugeot en retrait des lampadaires. La Corniche Ouest, d'ordinaire animée de sportifs et de marchands ambulants, était déserte à cette heure avancée. Le ressac des vagues contre les falaises de basalte masquait le bruit de ses pas. Au loin, sous les arches en béton inachevées du grand hôtel en chantier, une ombre fumait nerveusement. Il s'approcha doucement. L'inconnu jeta sa cigarette, révélant un visage creusé par la peur. C'était Ablaye, le neveu de l'archiviste disparu. 'Il a trouvé des dossiers datant de 1974, Birame. Des dossiers qu'il n'aurait jamais dû ouvrir.'"
+      pages: [
+        { content: "Birame gara sa vieille Peugeot en retrait des lampadaires. La Corniche Ouest, d'ordinaire animée de sportifs et de marchands ambulants, était déserte à cette heure avancée. Le ressac des vagues contre les falaises de basalte masquait le bruit de ses pas." },
+        { content: "Au loin, sous les arches en béton inachevées du grand hôtel en chantier, une ombre fumait nerveusement. Il s'approcha doucement. L'inconnu jeta sa cigarette, révélant un visage creusé par la peur. C'était Ablaye, le neveu de l'archiviste disparu. 'Il a trouvé des dossiers datant de 1974, Birame. Des dossiers qu'il n'aurait jamais dû ouvrir.'" }
+      ]
     },
     {
       id: 13,
       numero: 3,
       title: "Chapitre 3 : L'ombre de la Médina",
-      content: "La rencontre sur la corniche n'avait fait que soulever d'autres questions. Ablaye s'était enfui à l'approche de phares suspects. Birame décida de retourner à la Médina, là où son instinct lui disait de chercher. En marchant dans les ruelles étroites où s'éteignaient les derniers échos des tams-tams d'un mariage de quartier, il se sentit suivi. Un pick-up blanc, vitres teintées, roulait au pas derrière lui. Il tourna brusquement à l'angle de la rue 22, s'engouffra dans une cour commune familière et retint son souffle derrière le grand portail de fer forgé."
+      pages: [
+        { content: "La rencontre sur la corniche n'avait fait que soulever d'autres questions. Ablaye s'était enfui à l'approche de phares suspects. Birame décida de retourner à la Médina, là où son instinct lui disait de chercher." },
+        { content: "En marchant dans les ruelles étroites où s'éteignaient les derniers échos des tams-tams d'un mariage de quartier, il se sentit suivi. Un pick-up blanc, vitres teintées, roulait au pas derrière lui. Il tourna brusquement à l'angle de la rue 22, s'engouffra dans une cour commune familière et retint son souffle derrière le grand portail de fer forgé." }
+      ]
     },
     {
       id: 14,
       numero: 4,
       title: "Chapitre 4 : Les archives brûlées",
-      content: "Le lendemain matin, une colonne de fumée noire s'élevait au-dessus du centre-ville. Le bâtiment annexe du ministère, abritant les archives historiques nationales, était la proie des flammes. Birame, caché parmi les badauds et les journalistes, observa les pompiers lutter contre le sinistre. Les documents révélés par Ablaye la veille avaient disparu dans ce brasier opportun. Quelqu'un s'efforçait de réécrire l'histoire ou d'en effacer les preuves compromettantes. Birame comprit alors que l'enquête n'était plus seulement journalistique : elle était devenue une course pour sa propre survie."
+      pages: [
+        { content: "Le lendemain matin, une colonne de fumée noire s'élevait au-dessus du centre-ville. Le bâtiment annexe du ministère, abritant les archives historiques nationales, était la proie des flammes." },
+        { content: "Birame, caché parmi les badauds et les journalistes, observa les pompiers lutter contre le sinistre. Les documents révélés par Ablaye la veille avaient disparu dans ce brasier opportun. Quelqu'un s'efforçait de réécrire l'histoire ou d'en effacer les preuves compromettantes. Birame comprit alors que l'enquête n'était plus seulement journalistique : elle était devenue une course pour sa propre survie." }
+      ]
     },
     {
       id: 15,
       numero: 5,
       title: "Chapitre 5 : Le prix de la vérité",
-      content: "Trois jours après l'incendie, Birame prit sa décision. Il rédigea son article final, étayé par les quelques notes manuscrites qu'Ablaye lui avait confiées sur la corniche. Il savait qu'une fois publié, sa vie à Dakar ne serait plus jamais la même. Son éditeur hésita, conscient des implications politiques massives. Mais le devoir de vérité l'emporta. L'édition spéciale fut imprimée à l'aube. Dans les kiosques de la place de l'Indépendance, les titres s'arrachaient déjà. Birame, quant à lui, montait à bord du ferry de Gorée, cherchant un moment de répit dans le silence de l'île de mémoire, en attendant la tempête."
+      pages: [
+        { content: "Trois jours après l'incendie, Birame prit sa décision. Il rédigea son article final, étayé par les quelques notes manuscrites qu'Ablaye lui avait confiées sur la corniche. Il savait qu'une fois publié, sa vie à Dakar ne serait plus jamais la même." },
+        { content: "Son éditeur hésita, conscient des implications politiques massives. Mais le devoir de vérité l'emporta. L'édition spéciale fut imprimée à l'aube. Dans les kiosques de la place de l'Indépendance, les titres s'arrachaient déjà. Birame, quant à lui, montait à bord du ferry de Gorée, cherchant un moment de répit dans le silence de l'île de mémoire, en attendant la tempête." }
+      ]
     }
   ],
   "les-lianes-de-saly": [
@@ -318,19 +333,28 @@ export const mockChapters = {
       id: 21,
       numero: 1,
       title: "Chapitre 1 : Le retour à la mer",
-      content: "Après dix ans passés dans la grisaille parisienne, Aminata reposait enfin ses pieds sur le sable brûlant de Saly. La Petite-Côte n'avait rien perdu de sa lumière dorée, bien que le tourisme ait remodelé les pourtours du village d'origine. Elle venait reprendre la gestion de la résidence hôtelière de son défunt grand-père, un patriarche respecté de tous. Cependant, à peine arrivée, son oncle maternel lui fit comprendre que son retour d'Europe n'était pas vu d'un bon œil par toute la famille."
+      pages: [
+        { content: "Après dix ans passés dans la grisaille parisienne, Aminata reposait enfin ses pieds sur le sable brûlant de Saly. La Petite-Côte n'avait rien perdu de sa lumière dorée, bien que le tourisme ait remodelé les pourtours du village d'origine." },
+        { content: "Elle venait reprendre la gestion de la résidence hôtelière de son défunt grand-père, un patriarche respecté de tous. Cependant, à peine arrivée, son oncle maternel lui fit comprendre que son retour d'Europe n'était pas vu d'un bon œil par toute la famille." }
+      ]
     },
     {
       id: 22,
       numero: 2,
       title: "Chapitre 2 : La succession contestée",
-      content: "La réunion de famille eut lieu sous le grand baobab de la cour familiale à Mbour. L'atmosphère était lourde. Les oncles réclamaient la vente des terrains de Saly pour combler des dettes imaginaires, tandis qu'Aminata brandissait le testament écrit. Les lianes du passé familial se resserraient. Secrets de famille enfouis, rivalités fraternelles et convoitises foncières se heurtaient aux convictions de la jeune femme."
+      pages: [
+        { content: "La réunion de famille eut lieu sous le grand baobab de la cour familiale à Mbour. L'atmosphère était lourde." },
+        { content: "Les oncles réclamaient la vente des terrains de Saly pour combler des dettes imaginaires, tandis qu'Aminata brandissait le testament écrit. Les lianes du passé familial se resserraient. Secrets de famille enfouis, rivalités fraternelles et convoitises foncières se heurtaient aux convictions de la jeune femme." }
+      ]
     },
     {
       id: 23,
       numero: 3,
       title: "Chapitre 3 : La nouvelle aube",
-      content: "Malgré l'opposition des siens, Aminata décida de lancer les travaux de rénovation de la résidence. Avec l'aide des pêcheurs locaux et de ses amies d'enfance, elle reconstruisit les pontons en bois et modernisa les bungalows en privilégiant l'artisanat sénégalais. Lors de l'inauguration, la réussite fut totale, prouvant que l'héritage pouvait se réinventer avec respect. Les lianes de Saly ne l'avaient pas étouffée, elles l'avaient ancrée plus solidement au sol de ses ancêtres."
+      pages: [
+        { content: "Malgré l'opposition des siens, Aminata décida de lancer les travaux de rénovation de la résidence. Avec l'aide des pêcheurs locaux et de ses amies d'enfance, elle reconstruisit les pontons en bois et modernisa les bungalows en privilégiant l'artisanat sénégalais." },
+        { content: "Lors de l'inauguration, la réussite fut totale, prouvant que l'héritage pouvait se réinventer avec respect. Les lianes de Saly ne l'avaient pas étouffée, elles l'avaient ancrée plus solidement au sol de ses ancêtres." }
+      ]
     }
   ]
 };

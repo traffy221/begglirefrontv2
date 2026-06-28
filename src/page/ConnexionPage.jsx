@@ -167,10 +167,10 @@ const ConnexionPage = () => {
       <div className="w-full max-w-md bg-white rounded-3xl border border-primary-soft/20 shadow-xl p-8 space-y-8 relative z-10">
         
         {/* Title */}
-        <div className="text-center space-y-2">
+        <div className="text-center space-y-1">
           <span className="text-2xl font-serif font-bold text-primary-dark">Bëgg Lire</span>
-          <p className="text-xs text-gray font-light uppercase tracking-wider font-poppins">
-            Portail Littéraire
+          <p className="text-xs text-gray font-light italic font-serif">
+            Lire, partager, transmettre
           </p>
         </div>
 
@@ -245,20 +245,7 @@ const ConnexionPage = () => {
             </div>
 
             <div className="flex flex-col space-y-1.5">
-              <div className="flex justify-between items-center">
-                <label className="text-xs font-semibold text-gray uppercase tracking-wider">Mot de passe</label>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsForgotModalOpen(true);
-                    setForgotStatus("idle");
-                    setForgotMsg("");
-                  }}
-                  className="text-xs text-primary font-bold hover:underline"
-                >
-                  Mot de passe oublié ?
-                </button>
-              </div>
+              <label className="text-xs font-semibold text-gray uppercase tracking-wider">Mot de passe</label>
               <div className="relative">
                 <Lock className="absolute left-3.5 top-3.5 text-gray/40" size={16} />
                 <input
@@ -279,6 +266,20 @@ const ConnexionPage = () => {
             >
               {status === "loading" ? "Connexion..." : "Se connecter"}
             </button>
+
+            <div className="text-center pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsForgotModalOpen(true);
+                  setForgotStatus("idle");
+                  setForgotMsg("");
+                }}
+                className="text-xs text-primary hover:text-primary-dark font-bold hover:underline"
+              >
+                Mot de passe oublié ?
+              </button>
+            </div>
 
             {/* Social Logins */}
             <div className="relative flex items-center justify-center my-6">

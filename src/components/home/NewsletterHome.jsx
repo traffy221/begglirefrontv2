@@ -111,16 +111,20 @@ const NewsletterHome = () => {
               {benefits.map((benefit, idx) => (
                 <div
                   key={idx}
-                  className="bg-white/10 backdrop-blur-sm border border-white/5 rounded-2xl p-4 flex flex-col justify-between items-center text-center space-y-3"
+                  className="bg-white border border-[#181818]/10 rounded-2xl p-4 flex flex-col justify-between items-center text-center space-y-3 transition-all duration-300 hover:scale-[1.03] hover:shadow-lg"
                 >
-                  <div className="bg-white/10 p-2.5 rounded-xl">
+                  <div className="bg-[#181818]/5 p-2.5 rounded-xl">
                     {benefit.icon}
                   </div>
+                  
+                  {/* Separation fine en noir/charcoal */}
+                  <div className="w-8 h-[1px] bg-[#181818]/25" />
+
                   <div>
-                    <h3 className="font-serif font-bold text-xs text-white">
+                    <h3 className="font-serif font-bold text-xs text-charcoal">
                       {benefit.title}
                     </h3>
-                    <p className="text-[9px] text-white/70 mt-1 font-light leading-snug">
+                    <p className="text-[9px] text-charcoal/70 mt-1 font-light leading-snug">
                       {benefit.desc}
                     </p>
                   </div>

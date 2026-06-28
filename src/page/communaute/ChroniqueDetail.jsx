@@ -74,18 +74,7 @@ const ChroniqueDetail = () => {
 
   return (
     <div className="container mx-auto px-6 md:px-12 max-w-7xl py-12 space-y-12">
-      {/* Back button */}
-      <div>
-        <Link
-          to="/communaute"
-          className="inline-flex items-center space-x-1.5 text-xs uppercase tracking-wider font-poppins font-bold text-primary hover:text-primary-dark"
-        >
-          <ArrowLeft size={14} />
-          <span>Retour à la communauté</span>
-        </Link>
-      </div>
-
-      {/* ==========================================
+      {/* ==========================================================
          1. CHRONICLE HEADER (Summary)
          ========================================== */}
       <section className="bg-white rounded-3xl p-6 md:p-8 border border-primary-soft/20 shadow-sm grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
@@ -127,8 +116,8 @@ const ChroniqueDetail = () => {
          ========================================== */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
         
-        {/* Sidebar Left: Chapters Index (30%) */}
-        <aside className="lg:col-span-4 bg-white rounded-3xl p-6 border border-primary-soft/20 shadow-sm space-y-4 lg:sticky lg:top-32 max-h-[70vh] overflow-y-auto scrollbar-thin">
+        {/* Sidebar Left: Chapters Index (25%) */}
+        <aside className="lg:col-span-3 bg-white rounded-3xl p-5 border border-primary-soft/20 shadow-sm space-y-4 lg:sticky lg:top-32 max-h-[70vh] overflow-y-auto scrollbar-thin">
           <h3 className="font-serif font-bold text-base text-charcoal border-b border-primary-soft/10 pb-3">
             Index des chapitres
           </h3>
@@ -137,14 +126,14 @@ const ChroniqueDetail = () => {
               <button
                 key={chapter.id}
                 onClick={() => setActiveChapterIdx(index)}
-                className={`text-left text-xs uppercase tracking-wider font-bold py-2.5 px-4 rounded-xl transition-all flex items-center justify-between ${
+                className={`text-left text-[11px] uppercase tracking-wider font-bold py-2 px-3 rounded-xl transition-all flex items-center justify-between gap-2 ${
                   activeChapterIdx === index
                     ? "bg-accent-gold/20 text-charcoal border-l-4 border-accent-gold"
                     : "text-gray hover:text-charcoal hover:bg-ivory"
                 }`}
               >
                 <span>Chapitre {index + 1}</span>
-                <span className="text-[10px] text-gray/50 normal-case font-normal truncate max-w-[120px]">
+                <span className="text-[9px] text-gray/50 normal-case font-normal truncate max-w-[80px] sm:max-w-[100px] shrink-0">
                   {chapter.title}
                 </span>
               </button>
@@ -152,8 +141,8 @@ const ChroniqueDetail = () => {
           </div>
         </aside>
 
-        {/* Main Content Area: Chapter Text (70%) */}
-        <main className="lg:col-span-8 bg-white rounded-3xl p-8 md:p-12 border border-primary-soft/20 shadow-sm space-y-8 min-h-[500px]">
+        {/* Main Content Area: Chapter Text (75%) */}
+        <main className="lg:col-span-9 bg-white rounded-3xl p-8 md:p-12 border border-primary-soft/20 shadow-sm space-y-8 min-h-[500px]">
           
           {activeChapter ? (
             <div className="space-y-6">
@@ -167,10 +156,14 @@ const ChroniqueDetail = () => {
               </div>
 
               {/* Chapter Body */}
-              <div 
-                className="text-gray text-base leading-relaxed whitespace-pre-line font-light py-4"
-                dangerouslySetInnerHTML={{ __html: activeChapter.content }}
-              />
+              <div className="text-gray text-base leading-relaxed whitespace-pre-line font-light py-4 space-y-6">
+                {(activeChapter.pages || (activeChapter.content ? [{ content: activeChapter.content }] : [])).map((page, pIdx) => (
+                  <div 
+                    key={pIdx}
+                    dangerouslySetInnerHTML={{ __html: page.content }}
+                  />
+                ))}
+              </div>
 
               {/* Navigation buttons */}
               <div className="flex justify-between items-center pt-8 border-t border-primary-soft/10">

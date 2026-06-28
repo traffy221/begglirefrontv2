@@ -37,7 +37,7 @@ export default function SearchResults({ results, activeFilter, query, onClose, a
   const handleCategoryClick = (category) => {
     if (addToHistory) addToHistory(query);
     // Listing page uses 'category' or 'categorie' search parameter
-    navigate(`/catalogue?categorie=${category.id}`);
+    navigate(`/catalogue?category=${category.id}`);
     onClose();
   };
 

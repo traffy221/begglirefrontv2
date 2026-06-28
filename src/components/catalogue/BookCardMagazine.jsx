@@ -123,7 +123,7 @@ export default function BookCardMagazine({
           to={`/catalogue/${book.id}`}
           className="text-[#1c380e] font-poppins font-bold uppercase tracking-wider hover:underline"
         >
-          Détails
+          Voir
         </Link>
       </div>
 
