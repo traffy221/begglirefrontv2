@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 import { useBooks, useCategories, useSearch } from "../hooks/useQueries";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
@@ -13,6 +14,7 @@ import GridLayout from "../components/catalogue/GridLayout";
 import ListLayout from "../components/catalogue/ListLayout";
 import InfiniteScrollSentinel from "../components/catalogue/InfiniteScrollSentinel";
 import QuickViewModal from "../components/catalogue/QuickViewModal";
+import SponsoredBanner from "../components/catalogue/SponsoredBanner";
 
 export default function Listing() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -78,6 +80,63 @@ export default function Listing() {
 
   const categoriesQuery = useCategories();
   const categories = categoriesQuery.data?.data || categoriesQuery.data || [];
+
+  // Sync category parameter from URL to state
+  const lastProcessedCategoryRef = useRef(null);
+
+  useEffect(() => {
+    const categoryParam = searchParams.get("category") || searchParams.get("categorie") || "";
+    if (categoryParam !== lastProcessedCategoryRef.current && categories.length > 0) {
+      lastProcessedCategoryRef.current = categoryParam;
+      if (categoryParam === "all" || categoryParam === "") {
+        setSelectedCategories([]);
+      } else {
+        const idsOrSlugs = categoryParam.split(",");
+        const resolvedIds = [];
+        
+        idsOrSlugs.forEach(val => {
+          const matchedCat = categories.find(
+            c => String(c.id) === val || c.slug === val
+          );
+          if (matchedCat) {
+            resolvedIds.push(matchedCat.id);
+          } else {
+            const num = Number(val);
+            if (!isNaN(num)) {
+              resolvedIds.push(num);
+            }
+          }
+        });
+        
+        setSelectedCategories(resolvedIds);
+      }
+    }
+  }, [searchParams, categories]);
+
+  // Dynamic "Voir plus" link logic
+  const { voirPlusUrl, voirPlusLabel } = useMemo(() => {
+    if (selectedCategories.length === 0) {
+      return {
+        voirPlusUrl: "/catalogue",
+        voirPlusLabel: "Voir tous les livres"
+      };
+    }
+    
+    if (selectedCategories.length === 1) {
+      const catId = selectedCategories[0];
+      const cat = categories.find(c => c.id === catId);
+      const name = cat ? cat.name : "";
+      return {
+        voirPlusUrl: `/catalogue?category=${catId}`,
+        voirPlusLabel: name ? `Voir tous les livres de ${name}` : "Voir tous les livres de ce genre"
+      };
+    }
+    
+    return {
+      voirPlusUrl: `/catalogue?category=${selectedCategories.join(",")}`,
+      voirPlusLabel: "Voir tous les livres de ces genres"
+    };
+  }, [selectedCategories, categories]);
 
   // Extract primary books list (empty query -> all books, active query -> searched books)
   const books = useMemo(() => {
@@ -180,13 +239,22 @@ export default function Listing() {
     return result;
   }, [books, selectedCategories, selectedEtats, priceRange, selectedLangues, stockOnly, sortBy]);
 
+  // Sponsored Book and remaining list
+  const sponsoredBook = useMemo(() => {
+    return filteredBooks.length > 0 ? filteredBooks[0] : null;
+  }, [filteredBooks]);
+
+  const remainingBooks = useMemo(() => {
+    return filteredBooks.slice(1);
+  }, [filteredBooks]);
+
   // 6. Pagination & Infinite Scroll Logic
   const itemsPerPage = 12;
   const paginatedBooks = useMemo(() => {
-    return filteredBooks.slice(0, page * itemsPerPage);
-  }, [filteredBooks, page]);
+    return remainingBooks.slice(0, page * itemsPerPage);
+  }, [remainingBooks, page]);
 
-  const hasMore = paginatedBooks.length < filteredBooks.length;
+  const hasMore = paginatedBooks.length < remainingBooks.length;
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   const loadMore = useCallback(() => {
@@ -267,7 +335,14 @@ export default function Listing() {
 
   return (
     <div className="w-full min-h-screen bg-ivory pb-12">
-      {/* 1. Hero Compact & sticky search controls bar */}
+      {/* Sponsored Banner - above search controls and filters */}
+      {sponsoredBook && (
+        <div className="container mx-auto px-6 md:px-12 max-w-7xl pt-8">
+          <SponsoredBanner book={sponsoredBook} onAddToCart={handleAddToCart} />
+        </div>
+      )}
+
+      {/* 1. Sticky search controls bar */}
       <CatalogueHero
         searchQuery={searchQuery}
         onSearchChange={(val) => {
@@ -329,8 +404,20 @@ export default function Listing() {
             categoryCounts={categoryCounts}
           />
 
-          {/* Catalog Listings (flex-1) */}
-          <div className="flex-grow w-full space-y-8 min-h-[50vh]">
+          {/* Catalog Listings (flex-grow w-full) */}
+          <div className="flex-grow w-full space-y-6 min-h-[50vh]">
+            
+            {/* Dynamic "Voir plus" link */}
+            <div className="flex justify-end items-center">
+              <Link
+                to={voirPlusUrl}
+                className="text-[#1c380e] hover:text-[#2c4e1d] font-poppins font-bold text-[10px] md:text-xs uppercase tracking-wider flex items-center gap-1.5 transition-all select-none hover:underline group"
+              >
+                <span>{voirPlusLabel}</span>
+                <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />
+              </Link>
+            </div>
+
             {isPageLoading ? (
               // Initial Loading Skeletons
               <div className="w-full pt-10">

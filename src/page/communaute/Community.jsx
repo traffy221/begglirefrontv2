@@ -58,14 +58,26 @@ const Community = () => {
   const { data: chroniquesData, isLoading: chroniquesLoading } = useChroniques();
   const [categories, setCategories] = useState(["Tous"]);
 
-  // Retrieve toast if redirected with state
+  // Retrieve toast or active tab if redirected with state
   useEffect(() => {
+    let hasChanged = false;
+    let nextState = { ...location.state };
+
+    if (location.state?.activeTab) {
+      setActiveTab(location.state.activeTab);
+      delete nextState.activeTab;
+      hasChanged = true;
+    }
     if (location.state?.toast) {
       setToastMessage(location.state.toast);
-      // Clean up location state
-      navigate(location.pathname, { replace: true, state: {} });
+      delete nextState.toast;
+      hasChanged = true;
       // Clear toast after 4s
       setTimeout(() => setToastMessage(""), 4000);
+    }
+
+    if (hasChanged) {
+      navigate(location.pathname, { replace: true, state: nextState });
     }
   }, [location, navigate]);
 
@@ -265,10 +277,14 @@ const Community = () => {
       {/* ==========================================
          1. COMPACT HERO (40vh)
          ========================================== */}
-      <section className="h-[35vh] min-h-[260px] bg-[#1c380e] text-ivory flex items-center justify-center text-center px-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(118,189,71,0.15)_0%,transparent_100%)] z-0" />
+      <section className="h-[35vh] min-h-[260px] bg-[#181818] text-ivory flex items-center justify-center text-center px-6 relative overflow-hidden">
+        {/* Warm golden light diffused from the top center */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(229,178,62,0.25)_0%,transparent_75%)] z-0 pointer-events-none" />
+        {/* Secondary ambient warm glow from the bottom left */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(229,178,62,0.08)_0%,transparent_50%)] z-0 pointer-events-none" />
+        
         <div className="space-y-4 max-w-2xl relative z-10">
-          <span className="font-poppins uppercase tracking-widest text-[9px] font-bold text-accent-gold bg-white/5 border border-white/10 px-4.5 py-1 rounded-full">
+          <span className="font-poppins uppercase tracking-widest text-[9px] font-bold text-accent-gold bg-[#181818]/60 border border-accent-gold/30 px-4.5 py-1.5 rounded-full select-none">
             Espace d'expression
           </span>
           <h1 className="text-3xl md:text-5xl font-serif font-bold text-white tracking-tight">

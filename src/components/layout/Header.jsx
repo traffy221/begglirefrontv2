@@ -3,10 +3,11 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Search, Heart, ShoppingBag, User, Menu, X, ArrowRight, Mic, BookOpen } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
+import beggLireLogo from "../../assets/logo/begg_lire_logo.png";
 import SearchOverlay from "../search/SearchOverlay";
 
 const Header = () => {
-  const { isAuthenticated, wishlistCount } = useAuth();
+  const { isAuthenticated, wishlistCount, logout } = useAuth();
   const { totalItems } = useCart();
   
   const navigate = useNavigate();
@@ -22,8 +23,35 @@ const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPromoIdx, setCurrentPromoIdx] = useState(0);
 
+  // Profile Dropdown States
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const profileDropdownRef = useRef(null);
+
   const searchRef = useRef(null);
   const searchInputRef = useRef(null);
+
+  // Click outside listener for profile dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (profileDropdownRef.current && !profileDropdownRef.current.contains(event.target)) {
+        setIsProfileDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleProfileClick = (e) => {
+    if (isAuthenticated) {
+      e.preventDefault();
+      setIsProfileDropdownOpen((prev) => !prev);
+    }
+  };
+
+  const handleDropdownItemClick = (tab) => {
+    setIsProfileDropdownOpen(false);
+    navigate("/mon-compte", { state: { activeTab: tab } });
+  };
 
   const triggerVoiceSearch = () => {
     setIsVoiceSearchActive(true);
@@ -137,9 +165,8 @@ const Header = () => {
           {isHome && !isScrolled ? (
             <div className="lg:hidden flex items-center justify-between w-full">
               {/* Logo en haut à gauche, blanc */}
-              <Link to="/" className="flex items-center space-x-2 text-white">
-                <BookOpen className="w-6 h-6 text-white" />
-                <span className="font-serif font-bold text-lg tracking-tight">Bëgg Lire</span>
+              <Link to="/" className="flex items-center overflow-hidden">
+                <img src={beggLireLogo} alt="Bëgg Lire" className="h-12 w-auto object-contain brightness-0 invert" />
               </Link>
 
               {/* Bouton recherche vocale centré */}
@@ -176,8 +203,8 @@ const Header = () => {
                 >
                   <Menu size={22} />
                 </button>
-                <Link to="/" className="text-2xl font-serif font-bold text-primary-dark tracking-tight">
-                  Bëgg Lire
+                <Link to="/" className="flex items-center overflow-hidden">
+                  <img src={beggLireLogo} alt="Bëgg Lire" className="h-12 w-auto object-contain" />
                 </Link>
               </div>
 
@@ -207,14 +234,15 @@ const Header = () => {
              DESKTOP NAVIGATION (Hidden on mobile)
              ========================================== */}
           {/* Logo (Desktop only) */}
-          <div className="hidden lg:flex items-center">
-            <Link
-              to="/"
-              className={`text-2xl font-serif font-bold tracking-tight transition-colors ${
-                !isScrolled && isHome ? "text-white hover:text-accent-gold" : "text-primary-dark hover:text-primary"
-              }`}
-            >
-              Bëgg Lire
+          <div className="hidden lg:flex items-center overflow-hidden">
+            <Link to="/" className="flex items-center">
+              <img
+                src={beggLireLogo}
+                alt="Bëgg Lire"
+                className={`h-16 w-auto object-contain transition-all duration-300 ${
+                  !isScrolled && isHome ? "brightness-0 invert" : ""
+                }`}
+              />
             </Link>
           </div>
 
@@ -291,16 +319,58 @@ const Header = () => {
               )}
             </Link>
 
-            {/* Account Link */}
-            <Link
-              to={isAuthenticated ? "/mon-compte" : "/connexion"}
-              className={`p-2 transition-colors rounded-full ${
-                !isScrolled && isHome ? "text-white hover:text-white/80" : "text-charcoal hover:text-primary"
-              }`}
-              aria-label="Compte"
-            >
-              <User size={20} />
-            </Link>
+            {/* Account Link with Dropdown */}
+            <div className="relative flex items-center" ref={profileDropdownRef}>
+              {isAuthenticated ? (
+                <button
+                  onClick={handleProfileClick}
+                  className={`p-2 transition-colors rounded-full flex items-center justify-center outline-none ${
+                    !isScrolled && isHome ? "text-white hover:text-white/80" : "text-charcoal hover:text-primary"
+                  }`}
+                  aria-label="Compte"
+                >
+                  <User size={20} />
+                </button>
+              ) : (
+                <Link
+                  to="/connexion"
+                  className={`p-2 transition-colors rounded-full flex items-center justify-center ${
+                    !isScrolled && isHome ? "text-white hover:text-white/80" : "text-charcoal hover:text-primary"
+                  }`}
+                  aria-label="Compte"
+                >
+                  <User size={20} />
+                </Link>
+              )}
+
+              {/* Dropdown Menu */}
+              {isProfileDropdownOpen && (
+                <div className="absolute right-0 mt-2 top-full w-48 bg-white border border-primary-soft/20 rounded-2xl shadow-xl py-2 z-[100] animate-fade-in font-poppins text-xs">
+                  <button
+                    onClick={() => handleDropdownItemClick("profile")}
+                    className="w-full text-left px-4 py-2.5 text-charcoal hover:bg-ivory transition-colors flex items-center space-x-2 font-medium"
+                  >
+                    <span>Mon compte</span>
+                  </button>
+                  <button
+                    onClick={() => handleDropdownItemClick("commands")}
+                    className="w-full text-left px-4 py-2.5 text-charcoal hover:bg-ivory transition-colors flex items-center space-x-2 font-medium"
+                  >
+                    <span>Mes commandes</span>
+                  </button>
+                  <div className="border-t border-primary-soft/10 my-1.5" />
+                  <button
+                    onClick={() => {
+                      logout();
+                      setIsProfileDropdownOpen(false);
+                    }}
+                    className="w-full text-left px-4 py-2.5 text-rose-600 hover:bg-rose-50 transition-colors flex items-center space-x-2 font-bold"
+                  >
+                    <span>Déconnexion</span>
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </header>

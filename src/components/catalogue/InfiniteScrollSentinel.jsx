@@ -2,7 +2,8 @@ export default function InfiniteScrollSentinel({
   sentinelRef,
   hasMore,
   isLoadingMore,
-  activeLayout
+  activeLayout,
+  endMessage = "— Vous avez vu tous les livres disponibles —"
 }) {
   
   // Magazine Skeleton (Pattern A)
@@ -74,7 +75,7 @@ export default function InfiniteScrollSentinel({
       {/* 3. Bottom final page text */}
       {!hasMore && (
         <div className="py-8 text-center text-xs md:text-sm font-serif italic text-gray/60 border-t border-primary-soft/5">
-          — Vous avez vu tous les livres disponibles —
+          {endMessage}
         </div>
       )}
 

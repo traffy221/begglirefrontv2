@@ -493,7 +493,7 @@ export default function SearchPage() {
                               to={`/catalogue/${book.id}`}
                               className="text-xs font-bold text-primary hover:text-[#1c380e] font-poppins"
                             >
-                              Voir plus
+                              Voir
                             </Link>
                           </div>
                         </div>

@@ -8,10 +8,10 @@ export default function MagazineLayout({
   onAddToCart
 }) {
   
-  // Chunk books by 7 to implement the alternating layout rhythm
+  // Chunk books by 8 to implement the alternating layout rhythm (3 for BLOC A, 4 for BLOC B, 1 for BLOC C)
   const chunks = [];
-  for (let i = 0; i < books.length; i += 7) {
-    chunks.push(books.slice(i, i + 7));
+  for (let i = 0; i < books.length; i += 8) {
+    chunks.push(books.slice(i, i + 8));
   }
 
   const getImgUrl = (path) => {
@@ -24,17 +24,17 @@ export default function MagazineLayout({
     <div className="space-y-12 select-none">
       {chunks.map((chunk, chunkIdx) => {
         // chunk[0..2] -> BLOC A (Featured + 2 Compacts)
-        // chunk[3..5] -> BLOC B (3 equal columns)
-        // chunk[6]    -> BLOC C (1 full horizontal card)
+        // chunk[3..6] -> BLOC B (4 equal columns on desktop)
+        // chunk[7]    -> BLOC C (1 full horizontal card)
         
         const hasA = chunk.length > 0;
         const hasB = chunk.length > 3;
-        const hasC = chunk.length > 6;
+        const hasC = chunk.length > 7;
 
         return (
           <div key={chunkIdx} className="space-y-12">
             
-            {/* BLOC A: 1 Featured (60%) + 2 Compacts (40%) */}
+            {/* BLOC A: 1 Featured (60% width) + 2 Compacts (40% width) */}
             {hasA && (
               <div className="grid grid-cols-1 lg:grid-cols-10 gap-8 items-stretch">
                 
@@ -71,10 +71,10 @@ export default function MagazineLayout({
               </div>
             )}
 
-            {/* BLOC B: 3 Columns Grid */}
+            {/* BLOC B: 4 Columns Grid on Desktop (lg:grid-cols-4), 3 on Tablet (md:grid-cols-3) */}
             {hasB && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-                {chunk.slice(3, 6).map((b) => (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {chunk.slice(3, 7).map((b) => (
                   <BookCardMagazine
                     key={b.id}
                     book={b}
@@ -88,7 +88,7 @@ export default function MagazineLayout({
 
             {/* BLOC C: 1 Large Horizontal card (alternating white/sage-soft background) */}
             {hasC && (() => {
-              const bC = chunk[6];
+              const bC = chunk[7];
               const coverUrl = getImgUrl(bC.image || bC.cover || bC.image_link);
               const price = Number(bC.prix_vente !== undefined ? bC.prix_vente : (bC.prix !== undefined ? bC.prix : 0));
               const categoryName = bC.category?.name || bC.categorie || "Roman";

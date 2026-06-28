@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Send, CheckCircle2, AlertCircle } from "lucide-react";
 import apiClient from "../../api/client";
+import beggLireLogo from "../../assets/logo/begg_lire_logo.png";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
@@ -35,16 +36,20 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-primary-dark text-ivory pt-16 pb-8 transition-colors duration-300">
+    <footer className="bg-charcoal text-ivory pt-16 pb-8 border-t border-white/5 transition-colors duration-300">
       <div className="container mx-auto px-6 md:px-12 max-w-7xl">
         {/* Asymmetric Content Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 pb-12">
           {/* Left Column: Manifesto (Wide - 7/12 cols) */}
           <div className="lg:col-span-7 flex flex-col justify-between space-y-6">
             <div>
-              <span className="text-3xl font-serif font-bold tracking-tight text-white block mb-4">
-                Bëgg Lire
-              </span>
+              <Link to="/" className="inline-block mb-4 max-h-20 overflow-hidden">
+                <img
+                  src={beggLireLogo}
+                  alt="Bëgg Lire"
+                  className="h-20 w-auto object-contain brightness-0 invert"
+                />
+              </Link>
               <p className="font-serif italic text-lg md:text-xl text-white/90 leading-relaxed max-w-xl">
                 "Promouvoir le goût de la lecture, célébrer les récits d'Afrique et d'ailleurs, et soutenir la communauté d'écrivains avec fierté."
               </p>

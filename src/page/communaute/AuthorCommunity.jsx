@@ -81,17 +81,6 @@ const AuthorCommunity = () => {
 
   return (
     <div className="container mx-auto px-6 md:px-12 max-w-5xl py-12 space-y-12">
-      {/* Back button */}
-      <div>
-        <Link
-          to="/communaute"
-          className="inline-flex items-center space-x-1.5 text-xs uppercase tracking-wider font-poppins font-bold text-primary hover:text-primary-dark"
-        >
-          <ArrowLeft size={14} />
-          <span>Retour à la communauté</span>
-        </Link>
-      </div>
-
       {/* Author Profile Card */}
       <section className="bg-white rounded-3xl p-8 border border-primary-soft/20 shadow-sm flex items-center space-x-6">
         <div className="w-16 h-16 bg-primary-soft/40 text-primary-dark font-serif font-bold text-2xl rounded-full flex items-center justify-center border-2 border-primary shadow-sm">
