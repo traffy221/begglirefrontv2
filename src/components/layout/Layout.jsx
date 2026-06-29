@@ -30,18 +30,20 @@ const Layout = () => {
     };
   }, []);
 
+  const isBloggerRoute = pathname.startsWith("/blogger");
+
   return (
     <div className="flex flex-col min-h-screen bg-ivory text-charcoal">
       {/* Editorial Premium Fixed Header */}
-      <Header />
+      {!isBloggerRoute && <Header />}
 
       {/* Main Content Area: Conditional padding-top so Home Page Hero covers the transparent header */}
-      <main className={`flex-grow ${pathname === "/" ? "pt-0" : "pt-[112px]"}`}>
+      <main className={`flex-grow ${isBloggerRoute ? "pt-0" : pathname === "/" ? "pt-0" : "pt-[112px]"}`}>
         <Outlet />
       </main>
 
       {/* Editorial Premium Footer */}
-      <Footer />
+      {!isBloggerRoute && <Footer />}
 
       {/* Global Toast Cart Notification */}
       {activeToast && (

@@ -33,6 +33,7 @@ import {
 import { useCategories } from "../../hooks/useQueries";
 import { useAuth } from "../../context/AuthContext";
 import apiClient, { IMAGE_URL } from "../../api/client";
+import beggLireLogo from "../../assets/logo/begg_lire_logo.png";
 
 const BloggerDashboard = () => {
   const navigate = useNavigate();
@@ -412,30 +413,34 @@ const BloggerDashboard = () => {
     <div className="flex bg-ivory min-h-screen">
       
       {/* ==========================================
-         SIDEBAR NAVIGATION
+         SIDEBAR NAVIGATION - CLEAN
          ========================================== */}
-      <aside className="w-[240px] bg-[#1c380e] text-white flex flex-col justify-between shrink-0 h-screen sticky top-0 z-50 p-6 border-r border-white/5">
+      <aside className="w-[240px] bg-[#8E775B] text-white flex flex-col justify-between shrink-0 h-screen sticky top-0 z-50 p-6 shadow-md">
         <div className="space-y-8">
           
           {/* Logo & Headline */}
-          <div className="flex items-center space-x-2 border-b border-white/10 pb-4">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center font-bold text-lg text-white">
-              B
-            </div>
-            <div>
-              <span className="font-serif font-bold text-sm block tracking-wide">Bëgg Lire</span>
-              <span className="text-[9px] font-poppins text-accent-gold uppercase font-bold tracking-widest">Blogger Hub</span>
+          <div className="flex items-center space-x-2.5 border-b border-white/10 pb-4">
+            <Link to="/" className="block h-10 overflow-hidden shrink-0">
+              <img
+                src={beggLireLogo}
+                alt="Bëgg Lire"
+                className="h-10 w-auto object-contain brightness-0 invert"
+              />
+            </Link>
+            <div className="leading-tight">
+              <span className="font-serif font-bold text-sm block tracking-wide text-white">Bëgg Lire</span>
+              <span className="text-[8px] font-poppins text-[#E8D9A8] uppercase font-bold tracking-widest block mt-0.5">Blogger Hub</span>
             </div>
           </div>
 
           {/* Blogger Card */}
-          <div className="flex items-center space-x-3 bg-white/5 p-3 rounded-2xl border border-white/10">
-            <div className="w-10 h-10 rounded-full bg-primary-soft text-primary-dark font-bold font-poppins text-sm flex items-center justify-center">
+          <div className="flex items-center space-x-3 bg-white/5 p-3 rounded-xl">
+            <div className="w-10 h-10 rounded-full bg-[#E8D9A8] text-[#2E1E05] font-bold font-poppins text-sm flex items-center justify-center">
               {profPlume ? profPlume[0].toUpperCase() : "B"}
             </div>
             <div className="min-w-0">
               <span className="font-poppins text-xs font-bold text-white block truncate">{profPlume}</span>
-              <span className="text-[8px] font-poppins uppercase tracking-widest text-[#76BD47] font-semibold">Blogger certifié</span>
+              <span className="text-[8px] font-poppins uppercase tracking-widest text-[#E8D9A8] font-semibold">Blogger certifié</span>
             </div>
           </div>
 
@@ -443,10 +448,10 @@ const BloggerDashboard = () => {
           <nav className="flex flex-col space-y-1 font-poppins text-xs">
             <button
               onClick={() => setActiveTab("my-posts")}
-              className={`flex items-center space-x-2.5 px-4 py-3 rounded-xl transition-all ${
+              className={`flex items-center space-x-2.5 px-4 py-3 rounded-xl transition-all duration-300 ${
                 activeTab === "my-posts"
-                  ? "bg-primary text-white font-bold"
-                  : "text-white/70 hover:bg-white/5 hover:text-white"
+                  ? "bg-[#E8D9A8] text-[#5C4A1E] font-bold shadow-sm"
+                  : "text-white/90 hover:bg-white/10 hover:text-white"
               }`}
             >
               <FileText size={16} />
@@ -455,10 +460,10 @@ const BloggerDashboard = () => {
 
             <button
               onClick={() => setActiveTab("new-article")}
-              className={`flex items-center space-x-2.5 px-4 py-3 rounded-xl transition-all ${
+              className={`flex items-center space-x-2.5 px-4 py-3 rounded-xl transition-all duration-300 ${
                 activeTab === "new-article"
-                  ? "bg-primary text-white font-bold"
-                  : "text-white/70 hover:bg-white/5 hover:text-white"
+                  ? "bg-[#E8D9A8] text-[#5C4A1E] font-bold shadow-sm"
+                  : "text-white/90 hover:bg-white/10 hover:text-white"
               }`}
             >
               <PenTool size={16} />
@@ -467,10 +472,10 @@ const BloggerDashboard = () => {
 
             <button
               onClick={() => setActiveTab("new-review")}
-              className={`flex items-center space-x-2.5 px-4 py-3 rounded-xl transition-all ${
+              className={`flex items-center space-x-2.5 px-4 py-3 rounded-xl transition-all duration-300 ${
                 activeTab === "new-review"
-                  ? "bg-primary text-white font-bold"
-                  : "text-white/70 hover:bg-white/5 hover:text-white"
+                  ? "bg-[#E8D9A8] text-[#5C4A1E] font-bold shadow-sm"
+                  : "text-white/90 hover:bg-white/10 hover:text-white"
               }`}
             >
               <Star size={16} />
@@ -479,10 +484,10 @@ const BloggerDashboard = () => {
 
             <button
               onClick={() => setActiveTab("new-chronique")}
-              className={`flex items-center space-x-2.5 px-4 py-3 rounded-xl transition-all ${
+              className={`flex items-center space-x-2.5 px-4 py-3 rounded-xl transition-all duration-300 ${
                 activeTab === "new-chronique"
-                  ? "bg-primary text-white font-bold"
-                  : "text-white/70 hover:bg-white/5 hover:text-white"
+                  ? "bg-[#E8D9A8] text-[#5C4A1E] font-bold shadow-sm"
+                  : "text-white/90 hover:bg-white/10 hover:text-white"
               }`}
             >
               <BookOpen size={16} />
@@ -491,10 +496,10 @@ const BloggerDashboard = () => {
 
             <button
               onClick={() => setActiveTab("stats")}
-              className={`flex items-center space-x-2.5 px-4 py-3 rounded-xl transition-all ${
+              className={`flex items-center space-x-2.5 px-4 py-3 rounded-xl transition-all duration-300 ${
                 activeTab === "stats"
-                  ? "bg-primary text-white font-bold"
-                  : "text-white/70 hover:bg-white/5 hover:text-white"
+                  ? "bg-[#E8D9A8] text-[#5C4A1E] font-bold shadow-sm"
+                  : "text-white/90 hover:bg-white/10 hover:text-white"
               }`}
             >
               <BarChart2 size={16} />
@@ -503,10 +508,10 @@ const BloggerDashboard = () => {
 
             <button
               onClick={() => setActiveTab("profile")}
-              className={`flex items-center space-x-2.5 px-4 py-3 rounded-xl transition-all ${
+              className={`flex items-center space-x-2.5 px-4 py-3 rounded-xl transition-all duration-300 ${
                 activeTab === "profile"
-                  ? "bg-primary text-white font-bold"
-                  : "text-white/70 hover:bg-white/5 hover:text-white"
+                  ? "bg-[#E8D9A8] text-[#5C4A1E] font-bold shadow-sm"
+                  : "text-white/90 hover:bg-white/10 hover:text-white"
               }`}
             >
               <User size={16} />
@@ -536,7 +541,7 @@ const BloggerDashboard = () => {
            ========================================== */}
         {activeTab === "my-posts" && (
           <div className="space-y-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-primary-soft/10 pb-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray/10 pb-4">
               <div>
                 <h1 className="font-serif font-bold text-2xl md:text-3xl text-charcoal">Mes publications</h1>
                 <p className="text-xs text-gray">Gérez l'ensemble de vos articles, revues et récits.</p>
@@ -548,7 +553,7 @@ const BloggerDashboard = () => {
                 <select
                   value={typeFilter}
                   onChange={(e) => setTypeFilter(e.target.value)}
-                  className="bg-white border border-primary-soft/20 text-xs font-poppins font-semibold px-3 py-2 rounded-xl text-charcoal outline-none cursor-pointer"
+                  className="bg-[#f4f3f0] border-transparent text-xs font-poppins font-bold px-3 py-2 rounded-xl text-charcoal outline-none cursor-pointer hover:bg-[#e8e7e4] transition-colors"
                 >
                   <option value="Tous">Tous les types</option>
                   <option value="Articles">Articles</option>
@@ -560,7 +565,7 @@ const BloggerDashboard = () => {
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="bg-white border border-primary-soft/20 text-xs font-poppins font-semibold px-3 py-2 rounded-xl text-charcoal outline-none cursor-pointer"
+                  className="bg-[#f4f3f0] border-transparent text-xs font-poppins font-bold px-3 py-2 rounded-xl text-charcoal outline-none cursor-pointer hover:bg-[#e8e7e4] transition-colors"
                 >
                   <option value="Tous">Tous les statuts</option>
                   <option value="Publié">Publiés</option>
@@ -572,85 +577,113 @@ const BloggerDashboard = () => {
 
             {postsLoading ? (
               <div className="py-20 flex flex-col items-center justify-center space-y-3">
-                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-primary-dark" />
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-[#A89070]" />
                 <span className="text-xs text-gray italic">Chargement du classeur...</span>
               </div>
             ) : filteredPosts.length > 0 ? (
-              <div className="space-y-4">
-                {filteredPosts.map((post) => {
-                  const pStatus = post.status || "Publié";
-                  let statusBadge = "bg-emerald-50 text-emerald-600 border border-emerald-100";
-                  if (pStatus === "Brouillon") statusBadge = "bg-slate-50 text-slate-500 border border-slate-100";
-                  else if (pStatus === "En attente") statusBadge = "bg-amber-50 text-amber-600 border border-amber-100";
+              <div className="space-y-8 animate-fade-in">
+                <div className="space-y-4">
+                  {filteredPosts.map((post) => {
+                    const pStatus = post.status || "Publié";
+                    let statusBadge = "bg-emerald-50 text-emerald-600 border border-transparent";
+                    if (pStatus === "Brouillon") statusBadge = "bg-slate-50 text-slate-500 border border-transparent";
+                    else if (pStatus === "En attente") statusBadge = "bg-amber-50 text-amber-600 border border-transparent";
 
-                  const pType = post.type === "regard" ? "Review" : (post.type || "Article");
-                  let typeColor = "bg-primary-soft/40 text-primary-dark";
-                  if (pType === "Chronique") typeColor = "bg-accent-gold/25 text-[#9a7318]";
+                    const pType = post.type === "regard" ? "Review" : (post.type || "Article");
+                    let typeColor = "bg-community-camel/10 text-community-camel-dark";
+                    if (pType === "Chronique") typeColor = "bg-[#E8D9A8]/40 text-[#2E1E05]";
 
-                  return (
-                    <div
-                      key={post.id}
-                      className="bg-white rounded-2xl p-4 border border-primary-soft/10 shadow-sm hover:shadow-md transition-all flex items-center justify-between gap-4 flex-wrap md:flex-nowrap"
-                    >
-                      <div className="flex items-center space-x-4">
-                        <div className="w-12 h-16 rounded-lg overflow-hidden shrink-0 bg-slate-100 border border-primary-soft/10">
-                          <img
-                            src={getImgUrl(post.image || post.cover_image)}
-                            alt={post.titre || post.title}
-                            className="w-full h-full object-cover"
-                          />
+                    return (
+                      <div
+                        key={post.id}
+                        className="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all flex items-center justify-between gap-4 flex-wrap md:flex-nowrap"
+                      >
+                        <div className="flex items-center space-x-4">
+                          <div className="w-12 h-16 rounded-lg overflow-hidden shrink-0 bg-slate-100">
+                            <img
+                              src={getImgUrl(post.image || post.cover_image)}
+                              alt={post.titre || post.title}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div>
+                            <span className={`text-[8px] font-poppins uppercase tracking-wider font-bold px-2 py-0.5 rounded ${typeColor}`}>
+                              {pType}
+                            </span>
+                            <h4 className="font-serif font-bold text-sm text-charcoal leading-snug line-clamp-1 mt-1">
+                              {post.titre || post.title}
+                            </h4>
+                            <div className="flex items-center space-x-3 text-[10px] text-gray/50 font-poppins font-medium mt-0.5">
+                              <span>{new Date(post.created_at).toLocaleDateString("fr-FR")}</span>
+                              <span className="text-gray/25">|</span>
+                              <span className="flex items-center">
+                                <Eye size={10} className="mr-0.5" />
+                                {post.views_count || post.nb_vues || 0}
+                              </span>
+                              <span className="text-gray/25">|</span>
+                              <span className="flex items-center">
+                                <MessageSquare size={10} className="mr-0.5" />
+                                {post.comments_count || 0}
+                              </span>
+                            </div>
+                          </div>
                         </div>
-                        <div>
-                          <span className={`text-[8px] font-poppins uppercase tracking-wider font-bold px-2 py-0.5 rounded ${typeColor}`}>
-                            {pType}
+
+                        <div className="flex items-center space-x-3 shrink-0">
+                          <span className={`text-[9px] font-poppins font-semibold px-2 py-0.5 rounded-full ${statusBadge}`}>
+                            {pStatus}
                           </span>
-                          <h4 className="font-serif font-bold text-sm text-charcoal leading-snug line-clamp-1 mt-1">
-                            {post.titre || post.title}
-                          </h4>
-                          <div className="flex items-center space-x-3 text-[10px] text-gray/50 font-poppins font-medium mt-0.5">
-                            <span>{new Date(post.created_at).toLocaleDateString("fr-FR")}</span>
-                            <span>•</span>
-                            <span className="flex items-center">
-                              <Eye size={10} className="mr-0.5" />
-                              {post.views_count || post.nb_vues || 0}
-                            </span>
-                            <span>•</span>
-                            <span className="flex items-center">
-                              <MessageSquare size={10} className="mr-0.5" />
-                              {post.comments_count || 0}
-                            </span>
+                          
+                          <div className="flex items-center space-x-1.5">
+                            <button
+                              onClick={() => alert("Modification disponible prochainement.")}
+                              className="text-xs font-poppins font-bold bg-[#f4f3f0] hover:bg-[#e8e7e4] text-charcoal px-3 py-1.5 rounded-lg transition-all"
+                            >
+                              Éditer
+                            </button>
+                            
+                            <button
+                              onClick={() => handleDeleteClick(post)}
+                              className="text-xs font-poppins font-bold hover:bg-rose-50 text-rose-500 border border-transparent p-2 rounded-lg transition-all"
+                              aria-label="Supprimer"
+                            >
+                              <Trash2 size={14} />
+                            </button>
                           </div>
                         </div>
                       </div>
+                    );
+                  })}
+                </div>
 
-                      <div className="flex items-center space-x-3 shrink-0">
-                        <span className={`text-[9px] font-poppins font-semibold px-2 py-0.5 rounded-full ${statusBadge}`}>
-                          {pStatus}
-                        </span>
-                        
-                        <div className="flex items-center space-x-1.5">
-                          <button
-                            onClick={() => alert("Modification disponible prochainement.")}
-                            className="text-xs font-poppins font-bold bg-ivory hover:bg-slate-100 text-charcoal border border-primary-soft/20 px-3 py-1.5 rounded-lg transition-all"
-                          >
-                            Éditer
-                          </button>
-                          
-                          <button
-                            onClick={() => handleDeleteClick(post)}
-                            className="text-xs font-poppins font-bold hover:bg-rose-50 text-rose-500 border border-rose-100 p-2 rounded-lg transition-all"
-                            aria-label="Supprimer"
-                          >
-                            <Trash2 size={14} />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
+                {/* Encouragement & Quick CTA Box to fill empty space */}
+                <div className="bg-[#FAF6E6]/60 rounded-xl p-6 text-center space-y-4 border border-[#E8D9A8]/30 shadow-sm max-w-md mx-auto mt-8">
+                  <div className="space-y-1">
+                    <p className="font-serif font-bold text-sm text-[#2E1E05]">
+                      Vous avez {filteredPosts.length} publication{filteredPosts.length > 1 ? "s" : ""} active{filteredPosts.length > 1 ? "s" : ""}.
+                    </p>
+                    <p className="text-xs text-gray/80">
+                      Continuez à partager vos écrits et inspirez la communauté littéraire !
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap justify-center gap-2 pt-1 text-xs">
+                    <button
+                      onClick={() => setActiveTab("new-article")}
+                      className="px-3.5 py-2 bg-[#A89070] hover:bg-[#8E775B] text-white font-bold rounded-lg transition-all shadow-sm"
+                    >
+                      Rédiger un article
+                    </button>
+                    <button
+                      onClick={() => setActiveTab("new-review")}
+                      className="px-3.5 py-2 bg-white hover:bg-slate-50 text-charcoal border border-gray/10 font-bold rounded-lg transition-all shadow-sm"
+                    >
+                      Créer une review
+                    </button>
+                  </div>
+                </div>
               </div>
             ) : (
-              <div className="bg-white rounded-3xl p-16 text-center text-gray border border-primary-soft/10 font-serif">
+              <div className="bg-white rounded-xl p-16 text-center text-gray font-serif shadow-sm">
                 Aucune publication ne correspond à vos filtres.
               </div>
             )}
@@ -668,7 +701,7 @@ const BloggerDashboard = () => {
             </div>
 
             {artSuccess && (
-              <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl p-4 flex items-center space-x-2.5 animate-fade-in text-xs font-poppins">
+              <div className="bg-emerald-50 border border-transparent text-emerald-800 rounded-xl p-4 flex items-center space-x-2.5 animate-fade-in text-xs font-poppins">
                 <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
                 <span>Article créé avec succès ! Redirection vers la liste...</span>
               </div>
@@ -677,7 +710,7 @@ const BloggerDashboard = () => {
             <form onSubmit={handleCreateArticle} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
               
               {/* Form inputs (8 cols) */}
-              <div className="lg:col-span-8 bg-white rounded-3xl p-6 md:p-8 border border-primary-soft/10 shadow-sm space-y-5">
+              <div className="lg:col-span-8 bg-white rounded-xl p-6 md:p-8 shadow-sm space-y-5">
                 
                 {/* Title */}
                 <div className="space-y-1">
@@ -689,7 +722,7 @@ const BloggerDashboard = () => {
                     placeholder="Saisissez un titre captivant..."
                     required
                     maxLength={150}
-                    className="w-full bg-ivory text-xs px-4 py-3 rounded-xl border border-primary-soft/20 outline-none focus:border-primary-dark transition-colors"
+                    className="w-full bg-ivory text-xs px-4 py-3 rounded-xl border border-gray/10 outline-none focus:border-[#A89070] transition-colors"
                   />
                   <div className="flex justify-end text-[9px] text-gray/40">
                     <span>{artTitle.length} / 150</span>
@@ -704,7 +737,7 @@ const BloggerDashboard = () => {
                       value={artCat}
                       onChange={(e) => setArtCat(e.target.value)}
                       required
-                      className="w-full bg-ivory border border-primary-soft/20 text-xs px-4 py-3 rounded-xl text-charcoal outline-none cursor-pointer"
+                      className="w-full bg-ivory border border-gray/10 text-xs px-4 py-3 rounded-xl text-charcoal outline-none cursor-pointer focus:border-[#A89070]"
                     >
                       <option value="">Sélectionner une catégorie...</option>
                       {categoriesList.map(cat => (
@@ -722,7 +755,7 @@ const BloggerDashboard = () => {
                           name="artStatus"
                           checked={artStatus === "Publier maintenant"}
                           onChange={() => setArtStatus("Publier maintenant")}
-                          className="w-4 h-4 text-primary cursor-pointer"
+                          className="w-4 h-4 text-[#A89070] focus:ring-[#A89070] border-gray/20 cursor-pointer"
                         />
                         <span>Publier maintenant</span>
                       </label>
@@ -732,7 +765,7 @@ const BloggerDashboard = () => {
                           name="artStatus"
                           checked={artStatus === "Enregistrer en brouillon"}
                           onChange={() => setArtStatus("Enregistrer en brouillon")}
-                          className="w-4 h-4 text-primary cursor-pointer"
+                          className="w-4 h-4 text-[#A89070] focus:ring-[#A89070] border-gray/20 cursor-pointer"
                         />
                         <span>Enregistrer brouillon</span>
                       </label>
@@ -749,7 +782,7 @@ const BloggerDashboard = () => {
                     onChange={(e) => setArtContent(e.target.value)}
                     placeholder="Écrivez votre texte ici. Racontez votre analyse littéraire avec soin..."
                     required
-                    className="w-full bg-ivory text-xs p-4 rounded-xl border border-primary-soft/20 outline-none focus:border-primary-dark transition-colors resize-none font-sans"
+                    className="w-full bg-ivory text-xs p-4 rounded-xl border border-gray/10 outline-none focus:border-[#A89070] transition-colors resize-none font-sans"
                   />
                   <div className="flex justify-between items-center text-[9px] text-gray/40 pt-0.5">
                     <span>Min. 300 caractères</span>
@@ -762,11 +795,11 @@ const BloggerDashboard = () => {
                 {/* Tags */}
                 <div className="space-y-2">
                   <label className="text-[10px] font-poppins font-bold uppercase tracking-wider text-gray/80">Tags (Saisir et appuyer sur Entrée)</label>
-                  <div className="flex flex-wrap gap-2 bg-ivory p-3 rounded-xl border border-primary-soft/20 min-h-[44px]">
+                  <div className="flex flex-wrap gap-2 bg-ivory p-3 rounded-xl border border-gray/10 min-h-[44px] focus-within:border-[#A89070]">
                     {artTags.map(tag => (
-                      <span key={tag} className="bg-primary/10 text-primary-dark text-[10px] font-poppins font-bold px-2.5 py-1 rounded-lg flex items-center space-x-1">
+                      <span key={tag} className="bg-[#A89070]/10 text-[#2E1E05] text-[10px] font-poppins font-bold px-2.5 py-1 rounded-lg flex items-center space-x-1">
                         <span>{tag}</span>
-                        <button type="button" onClick={() => removeArtTag(tag)} className="text-primary hover:text-red-500">
+                        <button type="button" onClick={() => removeArtTag(tag)} className="text-[#A89070] hover:text-red-500">
                           <X size={10} />
                         </button>
                       </span>
@@ -783,18 +816,18 @@ const BloggerDashboard = () => {
                 </div>
 
                 {/* Submit Panel */}
-                <div className="flex justify-end space-x-3 pt-4 border-t border-primary-soft/10">
+                <div className="flex justify-end space-x-3 pt-4 border-t border-gray/5">
                   <button
                     type="button"
                     onClick={() => setActiveTab("my-posts")}
-                    className="bg-white hover:bg-slate-50 text-charcoal font-bold px-6 py-2.5 rounded-xl text-xs font-poppins border border-primary-soft/20 transition-all"
+                    className="bg-[#f4f3f0] hover:bg-[#e8e7e4] text-charcoal font-bold px-6 py-2.5 rounded-xl text-xs font-poppins transition-all"
                   >
                     Annuler
                   </button>
                   <button
                     type="submit"
                     disabled={artLoading}
-                    className="bg-[#1c380e] hover:bg-primary-dark text-white font-bold px-8 py-2.5 rounded-xl text-xs font-poppins shadow transition-all duration-300 disabled:opacity-50"
+                    className="bg-[#A89070] hover:bg-[#A89070]/90 text-white font-bold px-8 py-2.5 rounded-xl text-xs font-poppins shadow-sm transition-all duration-300 disabled:opacity-50"
                   >
                     {artLoading ? "Création..." : artStatus === "Publier maintenant" ? "Publier" : "Enregistrer"}
                   </button>
@@ -803,11 +836,11 @@ const BloggerDashboard = () => {
               </div>
 
               {/* Cover Upload (4 cols) */}
-              <div className="lg:col-span-4 bg-white rounded-3xl p-6 border border-primary-soft/10 shadow-sm space-y-4">
+              <div className="lg:col-span-4 bg-white rounded-xl p-6 shadow-sm space-y-4">
                 <label className="text-[10px] font-poppins font-bold uppercase tracking-wider text-gray/80">Image de couverture</label>
                 
                 {artImagePreview ? (
-                  <div className="relative rounded-2xl overflow-hidden shadow border border-primary-soft/10 h-48 bg-slate-100 flex items-center justify-center">
+                  <div className="relative rounded-xl overflow-hidden shadow-sm border border-gray/5 h-48 bg-slate-100 flex items-center justify-center">
                     <img src={artImagePreview} alt="Preview" className="w-full h-full object-cover" />
                     <button
                       type="button"
@@ -819,7 +852,7 @@ const BloggerDashboard = () => {
                     </button>
                   </div>
                 ) : (
-                  <label className="border-2 border-dashed border-primary-soft/40 rounded-2xl hover:bg-slate-50 transition-all flex flex-col items-center justify-center h-48 p-6 text-center cursor-pointer">
+                  <label className="border-2 border-dashed border-gray/20 rounded-xl hover:bg-slate-50 transition-all flex flex-col items-center justify-center h-48 p-6 text-center cursor-pointer">
                     <Upload className="text-gray/50 mb-2" size={24} />
                     <span className="text-xs text-charcoal font-semibold block">Choisir un fichier</span>
                     <span className="text-[9px] text-gray/50 block mt-1">PNG, JPG ou JPEG jusqu'à 2MB</span>
@@ -848,20 +881,20 @@ const BloggerDashboard = () => {
             </div>
 
             {revSuccess && (
-              <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl p-4 flex items-center space-x-2.5 animate-fade-in text-xs font-poppins">
+              <div className="bg-emerald-50 border border-transparent text-emerald-800 rounded-xl p-4 flex items-center space-x-2.5 animate-fade-in text-xs font-poppins">
                 <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
                 <span>Review publiée avec succès ! Redirection...</span>
               </div>
             )}
 
-            <form onSubmit={handleCreateReview} className="bg-white rounded-3xl p-6 md:p-8 border border-primary-soft/10 shadow-sm space-y-6">
+            <form onSubmit={handleCreateReview} className="bg-white rounded-xl p-6 md:p-8 shadow-sm space-y-6">
               
               {/* Book Autocomplete Search */}
               <div className="space-y-2 relative">
                 <label className="text-[10px] font-poppins font-bold uppercase tracking-wider text-gray/80">Rechercher le livre à critiquer</label>
                 
                 {revSelectedBook ? (
-                  <div className="bg-ivory border border-primary-soft/30 rounded-2xl p-4 flex items-center justify-between">
+                  <div className="bg-ivory border border-gray/10 rounded-xl p-4 flex items-center justify-between shadow-sm">
                     <div className="flex items-center space-x-3">
                       <div className="w-10 h-14 rounded overflow-hidden shrink-0 shadow bg-slate-100">
                         <img src={getImgUrl(revSelectedBook.image)} alt={revSelectedBook.titre} className="w-full h-full object-cover" />
@@ -875,13 +908,13 @@ const BloggerDashboard = () => {
                     <button
                       type="button"
                       onClick={() => setRevSelectedBook(null)}
-                      className="text-gray/50 hover:text-rose-500 p-1.5"
+                      className="text-gray/55 hover:text-rose-500 p-1.5"
                     >
                       <X size={16} />
                     </button>
                   </div>
                 ) : (
-                  <div className="flex items-center bg-ivory border border-primary-soft/20 rounded-xl px-3.5 py-2.5 w-full">
+                  <div className="flex items-center bg-ivory border border-gray/10 rounded-xl px-3.5 py-2.5 w-full focus-within:border-[#A89070] transition-colors">
                     <Search className="text-gray/50 mr-2 shrink-0" size={16} />
                     <input
                       type="text"
@@ -895,7 +928,7 @@ const BloggerDashboard = () => {
 
                 {/* Suggestions dropdown */}
                 {!revSelectedBook && revBookSuggestions.length > 0 && (
-                  <div className="absolute top-[72px] left-0 right-0 z-50 bg-white border border-primary-soft/20 rounded-2xl shadow-xl overflow-hidden max-h-60 overflow-y-auto scrollbar-thin">
+                  <div className="absolute top-[72px] left-0 right-0 z-50 bg-white rounded-xl shadow-xl overflow-hidden max-h-60 overflow-y-auto scrollbar-thin border border-gray/5">
                     {revBookSuggestions.map(book => (
                       <button
                         key={book.id}
@@ -904,7 +937,7 @@ const BloggerDashboard = () => {
                           setRevSelectedBook(book);
                           setRevBookSuggestions([]);
                         }}
-                        className="w-full text-left px-4 py-3 hover:bg-slate-50 flex items-center space-x-3 border-b border-primary-soft/5 last:border-b-0"
+                        className="w-full text-left px-4 py-3 hover:bg-slate-50 flex items-center space-x-3 border-b border-gray/5 last:border-b-0"
                       >
                         <div className="w-8 h-10 rounded overflow-hidden shadow-sm shrink-0 bg-slate-100">
                           <img src={getImgUrl(book.image)} alt={book.titre} className="w-full h-full object-cover" />
@@ -922,7 +955,7 @@ const BloggerDashboard = () => {
               {/* Rating */}
               <div className="space-y-1">
                 <label className="text-[10px] font-poppins font-bold uppercase tracking-wider text-gray/80">Votre évaluation (cliquez pour noter)</label>
-                <div className="flex items-center space-x-1 text-accent-gold pt-1">
+                <div className="flex items-center space-x-1 text-[#A89070] pt-1">
                   {[1, 2, 3, 4, 5].map((starVal) => (
                     <button
                       key={starVal}
@@ -932,7 +965,7 @@ const BloggerDashboard = () => {
                     >
                       <Star
                         size={24}
-                        className={starVal <= revRating ? "fill-accent-gold stroke-none" : "text-gray/20"}
+                        className={starVal <= revRating ? "fill-[#A89070] stroke-none" : "text-gray/20"}
                       />
                     </button>
                   ))}
@@ -948,7 +981,7 @@ const BloggerDashboard = () => {
                   onChange={(e) => setRevTitle(e.target.value)}
                   placeholder="Ex: Un roman d'une force rare..."
                   required
-                  className="w-full bg-ivory text-xs px-4 py-3 rounded-xl border border-primary-soft/20 outline-none focus:border-primary-dark transition-colors"
+                  className="w-full bg-ivory text-xs px-4 py-3 rounded-xl border border-gray/10 outline-none focus:border-[#A89070] transition-colors"
                 />
               </div>
 
@@ -961,7 +994,7 @@ const BloggerDashboard = () => {
                   onChange={(e) => setRevContent(e.target.value)}
                   placeholder="Partagez vos impressions : style, écriture, personnages..."
                   required
-                  className="w-full bg-ivory text-xs p-4 rounded-xl border border-primary-soft/20 outline-none focus:border-primary-dark transition-colors resize-none font-sans"
+                  className="w-full bg-ivory text-xs p-4 rounded-xl border border-gray/10 outline-none focus:border-[#A89070] transition-colors resize-none font-sans"
                 />
                 <div className="flex justify-between items-center text-[9px] text-gray/40 pt-0.5">
                   <span>Min. 150 caractères</span>
@@ -972,7 +1005,7 @@ const BloggerDashboard = () => {
               </div>
 
               {/* Status & Submit */}
-              <div className="flex items-center justify-between pt-4 border-t border-primary-soft/10 flex-wrap gap-4">
+              <div className="flex items-center justify-between pt-4 border-t border-gray/5 flex-wrap gap-4">
                 <div className="flex items-center space-x-4">
                   <label className="flex items-center space-x-1.5 text-xs text-charcoal font-medium cursor-pointer">
                     <input
@@ -980,7 +1013,7 @@ const BloggerDashboard = () => {
                       name="revStatus"
                       checked={revStatus === "Publier maintenant"}
                       onChange={() => setRevStatus("Publier maintenant")}
-                      className="w-4 h-4 text-primary cursor-pointer"
+                      className="w-4 h-4 text-[#A89070] focus:ring-[#A89070] border-gray/20 cursor-pointer"
                     />
                     <span>Publier maintenant</span>
                   </label>
@@ -990,7 +1023,7 @@ const BloggerDashboard = () => {
                       name="revStatus"
                       checked={revStatus === "Enregistrer en brouillon"}
                       onChange={() => setRevStatus("Enregistrer en brouillon")}
-                      className="w-4 h-4 text-primary cursor-pointer"
+                      className="w-4 h-4 text-[#A89070] focus:ring-[#A89070] border-gray/20 cursor-pointer"
                     />
                     <span>Enregistrer brouillon</span>
                   </label>
@@ -1000,14 +1033,14 @@ const BloggerDashboard = () => {
                   <button
                     type="button"
                     onClick={() => setActiveTab("my-posts")}
-                    className="bg-white hover:bg-slate-50 text-charcoal font-bold px-6 py-2.5 rounded-xl text-xs font-poppins border border-primary-soft/20 transition-all"
+                    className="bg-[#f4f3f0] hover:bg-[#e8e7e4] text-charcoal font-bold px-6 py-2.5 rounded-xl text-xs font-poppins transition-all"
                   >
                     Annuler
                   </button>
                   <button
                     type="submit"
                     disabled={revLoading || !revSelectedBook || revContent.length < 150}
-                    className="bg-[#1c380e] hover:bg-primary-dark text-white font-bold px-8 py-2.5 rounded-xl text-xs font-poppins shadow transition-all duration-300 disabled:opacity-50"
+                    className="bg-[#A89070] hover:bg-[#A89070]/90 text-white font-bold px-8 py-2.5 rounded-xl text-xs font-poppins shadow-sm transition-all duration-300 disabled:opacity-50"
                   >
                     {revLoading ? "Création..." : "Publier ma review"}
                   </button>
@@ -1029,7 +1062,7 @@ const BloggerDashboard = () => {
             </div>
 
             {chSuccess && (
-              <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl p-4 flex items-center space-x-2.5 animate-fade-in text-xs font-poppins">
+              <div className="bg-emerald-50 border border-transparent text-emerald-800 rounded-xl p-4 flex items-center space-x-2.5 animate-fade-in text-xs font-poppins">
                 <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
                 <span>Chronique et 1er chapitre enregistrés avec succès !</span>
               </div>
@@ -1037,9 +1070,9 @@ const BloggerDashboard = () => {
 
             {/* STEP 1: SERIES DETAILS */}
             {chStep === 1 && (
-              <form onSubmit={handleCreateChroniqueInfo} className="bg-white rounded-3xl p-6 md:p-8 border border-primary-soft/10 shadow-sm space-y-5">
-                <div className="flex items-center space-x-2 border-b border-primary-soft/10 pb-3">
-                  <span className="w-6 h-6 rounded-full bg-accent-gold text-charcoal text-xs font-bold flex items-center justify-center font-poppins">1</span>
+              <form onSubmit={handleCreateChroniqueInfo} className="bg-white rounded-xl p-6 md:p-8 shadow-sm space-y-5">
+                <div className="flex items-center space-x-2 border-b border-gray/5 pb-3">
+                  <span className="w-6 h-6 rounded-full bg-[#E8D9A8] text-[#2E1E05] text-xs font-bold flex items-center justify-center font-poppins">1</span>
                   <h3 className="font-serif font-bold text-sm text-charcoal">Étape 1 : Informations de la série</h3>
                 </div>
 
@@ -1051,7 +1084,7 @@ const BloggerDashboard = () => {
                     onChange={(e) => setChTitle(e.target.value)}
                     placeholder="Ex: Le souffle de la Petite Côte..."
                     required
-                    className="w-full bg-ivory text-xs px-4 py-3 rounded-xl border border-primary-soft/20 outline-none focus:border-primary-dark transition-colors"
+                    className="w-full bg-ivory text-xs px-4 py-3 rounded-xl border border-gray/10 outline-none focus:border-[#A89070] transition-colors"
                   />
                 </div>
 
@@ -1063,7 +1096,7 @@ const BloggerDashboard = () => {
                     onChange={(e) => setChDesc(e.target.value)}
                     placeholder="Rédigez le résumé accrocheur pour présenter l'intrigue aux lecteurs..."
                     required
-                    className="w-full bg-ivory text-xs p-4 rounded-xl border border-primary-soft/20 outline-none focus:border-primary-dark transition-colors resize-none"
+                    className="w-full bg-ivory text-xs p-4 rounded-xl border border-gray/10 outline-none focus:border-[#A89070] transition-colors resize-none"
                   />
                 </div>
 
@@ -1074,7 +1107,7 @@ const BloggerDashboard = () => {
                       value={chCat}
                       onChange={(e) => setChCat(e.target.value)}
                       required
-                      className="w-full bg-ivory border border-primary-soft/20 text-xs px-4 py-3 rounded-xl text-charcoal outline-none cursor-pointer"
+                      className="w-full bg-ivory border border-gray/10 text-xs px-4 py-3 rounded-xl text-charcoal outline-none cursor-pointer focus:border-[#A89070]"
                     >
                       <option value="">Sélectionner un type...</option>
                       <option value="Roman feuilleton">Roman feuilleton</option>
@@ -1089,7 +1122,7 @@ const BloggerDashboard = () => {
                     <select
                       value={chStatus}
                       onChange={(e) => setChStatus(e.target.value)}
-                      className="w-full bg-ivory border border-primary-soft/20 text-xs px-4 py-3 rounded-xl text-charcoal outline-none cursor-pointer"
+                      className="w-full bg-ivory border border-gray/10 text-xs px-4 py-3 rounded-xl text-charcoal outline-none cursor-pointer focus:border-[#A89070]"
                     >
                       <option value="En cours">En cours</option>
                       <option value="Terminée">Terminée</option>
@@ -1097,11 +1130,11 @@ const BloggerDashboard = () => {
                   </div>
                 </div>
 
-                <div className="flex justify-end pt-4 border-t border-primary-soft/10">
+                <div className="flex justify-end pt-4 border-t border-gray/5">
                   <button
                     type="submit"
                     disabled={chLoading}
-                    className="bg-[#1c380e] hover:bg-primary-dark text-white font-bold px-8 py-3 rounded-xl text-xs font-poppins shadow transition-all duration-300 inline-flex items-center space-x-1.5"
+                    className="bg-[#A89070] hover:bg-[#A89070]/90 text-white font-bold px-8 py-3 rounded-xl text-xs font-poppins shadow-sm transition-all duration-300 inline-flex items-center space-x-1.5"
                   >
                     <span>Créer et ajouter le 1er chapitre</span>
                     <ArrowRight size={14} />
@@ -1112,14 +1145,14 @@ const BloggerDashboard = () => {
 
             {/* STEP 2: ADD CHAPTER */}
             {chStep === 2 && (
-              <div className="bg-white rounded-3xl p-6 md:p-8 border border-primary-soft/10 shadow-sm space-y-5">
-                <div className="flex items-center justify-between border-b border-primary-soft/10 pb-3">
+              <div className="bg-white rounded-xl p-6 md:p-8 shadow-sm space-y-5">
+                <div className="flex items-center justify-between border-b border-gray/5 pb-3">
                   <div className="flex items-center space-x-2">
-                    <span className="w-6 h-6 rounded-full bg-accent-gold text-charcoal text-xs font-bold flex items-center justify-center font-poppins">2</span>
+                    <span className="w-6 h-6 rounded-full bg-[#E8D9A8] text-[#2E1E05] text-xs font-bold flex items-center justify-center font-poppins">2</span>
                     <h3 className="font-serif font-bold text-sm text-charcoal">Étape 2 : Ajouter un chapitre</h3>
                   </div>
                   
-                  <span className="text-xs font-poppins font-bold bg-primary-soft text-primary-dark px-3 py-1 rounded-lg">
+                  <span className="text-xs font-poppins font-bold bg-[#E8D9A8]/40 text-[#2E1E05] px-3 py-1 rounded-lg">
                     Chapitre {capNumber}
                   </span>
                 </div>
@@ -1132,7 +1165,7 @@ const BloggerDashboard = () => {
                     onChange={(e) => setCapTitle(e.target.value)}
                     placeholder="Ex: Chapitre 1 : L'appel de minuit..."
                     required
-                    className="w-full bg-ivory text-xs px-4 py-3 rounded-xl border border-primary-soft/20 outline-none focus:border-primary-dark transition-colors"
+                    className="w-full bg-ivory text-xs px-4 py-3 rounded-xl border border-gray/10 outline-none focus:border-[#A89070] transition-colors"
                   />
                 </div>
 
@@ -1144,11 +1177,11 @@ const BloggerDashboard = () => {
                     onChange={(e) => setCapContent(e.target.value)}
                     placeholder="Rédigez le texte complet de ce chapitre..."
                     required
-                    className="w-full bg-ivory text-xs p-4 rounded-xl border border-primary-soft/20 outline-none focus:border-primary-dark transition-colors resize-none font-sans"
+                    className="w-full bg-ivory text-xs p-4 rounded-xl border border-gray/10 outline-none focus:border-[#A89070] transition-colors resize-none font-sans"
                   />
                 </div>
 
-                <div className="flex justify-between items-center pt-4 border-t border-primary-soft/10 flex-wrap gap-4">
+                <div className="flex justify-between items-center pt-4 border-t border-gray/5 flex-wrap gap-4">
                   <button
                     type="button"
                     onClick={() => setChStep(1)}
@@ -1162,7 +1195,7 @@ const BloggerDashboard = () => {
                       type="button"
                       onClick={() => handleAddChapter(true)}
                       disabled={chLoading || !capContent.trim()}
-                      className="bg-white hover:bg-slate-50 text-charcoal font-bold px-6 py-2.5 rounded-xl text-xs font-poppins border border-primary-soft/20 transition-all flex items-center space-x-1"
+                      className="bg-[#f4f3f0] hover:bg-[#e8e7e4] text-charcoal font-bold px-6 py-2.5 rounded-xl text-xs font-poppins transition-all flex items-center space-x-1"
                     >
                       <Plus size={14} />
                       <span>Ajouter un autre chapitre</span>
@@ -1172,7 +1205,7 @@ const BloggerDashboard = () => {
                       type="button"
                       onClick={() => handleAddChapter(false)}
                       disabled={chLoading || !capContent.trim()}
-                      className="bg-[#1c380e] hover:bg-primary-dark text-white font-bold px-8 py-2.5 rounded-xl text-xs font-poppins shadow transition-all duration-300"
+                      className="bg-[#A89070] hover:bg-[#A89070]/90 text-white font-bold px-8 py-2.5 rounded-xl text-xs font-poppins shadow-sm transition-all duration-300"
                     >
                       {chLoading ? "Sauvegarde..." : "Terminer et enregistrer"}
                     </button>
@@ -1195,7 +1228,7 @@ const BloggerDashboard = () => {
 
             {statsLoading || !stats ? (
               <div className="py-20 flex flex-col items-center justify-center space-y-3">
-                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-primary-dark" />
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-community-camel" />
                 <span className="text-xs text-gray italic">Compilation des données...</span>
               </div>
             ) : (
@@ -1205,8 +1238,8 @@ const BloggerDashboard = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                   
                   {/* Card 1 */}
-                  <div className="bg-white border border-primary-soft/10 p-6 rounded-3xl shadow-sm flex items-center space-x-4">
-                    <div className="p-3 bg-primary/10 text-primary rounded-2xl">
+                  <div className="bg-white p-6 rounded-xl shadow-sm flex items-center space-x-4">
+                    <div className="p-3 bg-[#A89070]/10 text-[#A89070] rounded-xl">
                       <FileText size={22} />
                     </div>
                     <div>
@@ -1218,8 +1251,8 @@ const BloggerDashboard = () => {
                   </div>
 
                   {/* Card 2 */}
-                  <div className="bg-white border border-primary-soft/10 p-6 rounded-3xl shadow-sm flex items-center space-x-4">
-                    <div className="p-3 bg-accent-gold/20 text-[#a88224] rounded-2xl">
+                  <div className="bg-white p-6 rounded-xl shadow-sm flex items-center space-x-4">
+                    <div className="p-3 bg-[#E8D9A8]/40 text-[#2E1E05] rounded-xl">
                       <TrendingUp size={22} />
                     </div>
                     <div>
@@ -1231,8 +1264,8 @@ const BloggerDashboard = () => {
                   </div>
 
                   {/* Card 3 */}
-                  <div className="bg-white border border-primary-soft/10 p-6 rounded-3xl shadow-sm flex items-center space-x-4">
-                    <div className="p-3 bg-blue-50 text-blue-500 rounded-2xl">
+                  <div className="bg-white p-6 rounded-xl shadow-sm flex items-center space-x-4">
+                    <div className="p-3 bg-blue-50 text-blue-500 rounded-xl">
                       <MessageSquare size={22} />
                     </div>
                     <div>
@@ -1244,8 +1277,8 @@ const BloggerDashboard = () => {
                   </div>
 
                   {/* Card 4 */}
-                  <div className="bg-white border border-primary-soft/10 p-6 rounded-3xl shadow-sm flex items-center space-x-4">
-                    <div className="p-3 bg-purple-50 text-purple-500 rounded-2xl">
+                  <div className="bg-white p-6 rounded-xl shadow-sm flex items-center space-x-4">
+                    <div className="p-3 bg-purple-50 text-purple-500 rounded-xl">
                       <Award size={22} />
                     </div>
                     <div className="min-w-0">
@@ -1262,7 +1295,7 @@ const BloggerDashboard = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                   
                   {/* Recharts Bar Chart (8 cols) */}
-                  <div className="lg:col-span-8 bg-white border border-primary-soft/10 rounded-3xl p-6 md:p-8 shadow-sm space-y-4">
+                  <div className="lg:col-span-8 bg-white rounded-xl p-6 md:p-8 shadow-sm space-y-4">
                     <h3 className="font-serif font-bold text-base text-charcoal">Vues par publication (Top 5)</h3>
                     <div className="h-64 w-full">
                       <ResponsiveContainer width="100%" height="100%">
@@ -1270,9 +1303,9 @@ const BloggerDashboard = () => {
                           <XAxis dataKey="name" stroke="#666" fontSize={9} font-family="Inter" tickLine={false} />
                           <YAxis stroke="#666" fontSize={9} font-family="Inter" tickLine={false} />
                           <Tooltip wrapperClassName="font-poppins text-xs" />
-                          <Bar dataKey="views" fill="#76BD47" radius={[6, 6, 0, 0]}>
+                          <Bar dataKey="views" fill="#A89070" radius={[6, 6, 0, 0]}>
                             {stats.chart_data.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={index === 0 ? "#1c380e" : "#76BD47"} />
+                              <Cell key={`cell-${index}`} fill={index === 0 ? "#8E775B" : "#A89070"} />
                             ))}
                           </Bar>
                         </BarChart>
@@ -1281,12 +1314,12 @@ const BloggerDashboard = () => {
                   </div>
 
                   {/* Top table (4 cols) */}
-                  <div className="lg:col-span-4 bg-white border border-primary-soft/10 rounded-3xl p-6 shadow-sm space-y-4">
+                  <div className="lg:col-span-4 bg-white rounded-xl p-6 shadow-sm space-y-4">
                     <h3 className="font-serif font-bold text-base text-charcoal">Publications populaires</h3>
                     
                     <div className="space-y-3 font-poppins">
                       {stats.top_publications.map((item) => (
-                        <div key={item.rank} className="flex items-center justify-between border-b border-primary-soft/5 pb-2.5 last:border-b-0 last:pb-0">
+                        <div key={item.rank} className="flex items-center justify-between border-b border-gray/5 pb-2.5 last:border-b-0 last:pb-0">
                           <div className="flex items-center space-x-2.5 min-w-0">
                             <span className="w-5 h-5 rounded-lg bg-slate-100 font-bold text-[10px] text-charcoal flex items-center justify-center shrink-0">
                               {item.rank}
@@ -1295,7 +1328,7 @@ const BloggerDashboard = () => {
                               {item.title}
                             </span>
                           </div>
-                          <span className="text-[10px] font-bold text-primary shrink-0 pl-2">
+                          <span className="text-[10px] font-bold text-[#A89070] shrink-0 pl-2">
                             {item.views} vues
                           </span>
                         </div>
@@ -1321,7 +1354,7 @@ const BloggerDashboard = () => {
             </div>
 
             {profSuccess && (
-              <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl p-4 flex items-center space-x-2.5 animate-fade-in text-xs font-poppins">
+              <div className="bg-emerald-50 border border-transparent text-emerald-800 rounded-xl p-4 flex items-center space-x-2.5 animate-fade-in text-xs font-poppins">
                 <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
                 <span>Profil enregistré avec succès !</span>
               </div>
@@ -1330,7 +1363,7 @@ const BloggerDashboard = () => {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
               
               {/* Form (7 cols) */}
-              <form onSubmit={handleProfileSave} className="lg:col-span-7 bg-white rounded-3xl p-6 md:p-8 border border-primary-soft/10 shadow-sm space-y-5">
+              <form onSubmit={handleProfileSave} className="lg:col-span-7 bg-white rounded-xl p-6 md:p-8 shadow-sm space-y-5">
                 
                 {/* Pen Name */}
                 <div className="space-y-1">
@@ -1340,7 +1373,7 @@ const BloggerDashboard = () => {
                     value={profPlume}
                     onChange={(e) => setProfPlume(e.target.value)}
                     required
-                    className="w-full bg-ivory text-xs px-4 py-3 rounded-xl border border-primary-soft/20 outline-none focus:border-primary-dark transition-colors font-semibold"
+                    className="w-full bg-ivory text-xs px-4 py-3 rounded-xl border border-gray/10 outline-none focus:border-[#A89070] transition-colors font-semibold"
                   />
                 </div>
 
@@ -1354,7 +1387,7 @@ const BloggerDashboard = () => {
                     maxLength={300}
                     required
                     placeholder="Parlez de votre parcours littéraire..."
-                    className="w-full bg-ivory text-xs p-4 rounded-xl border border-primary-soft/20 outline-none focus:border-primary-dark transition-colors resize-none font-light leading-relaxed"
+                    className="w-full bg-ivory text-xs p-4 rounded-xl border border-gray/10 outline-none focus:border-[#A89070] transition-colors resize-none font-light leading-relaxed"
                   />
                   <div className="flex justify-end text-[9px] text-gray/40">
                     <span>{profBio.length} / 300</span>
@@ -1380,10 +1413,10 @@ const BloggerDashboard = () => {
                           key={spec}
                           type="button"
                           onClick={() => toggleProfSpec(spec)}
-                          className={`px-3 py-1.5 rounded-lg text-[9px] font-poppins font-bold transition-all border ${
+                          className={`px-3.5 py-1.5 rounded-lg text-[9px] font-poppins font-bold transition-all border ${
                             active
-                              ? "bg-primary-soft/50 text-primary-dark border-primary"
-                              : "bg-white border-primary-soft/20 text-gray hover:bg-slate-50"
+                              ? "bg-[#A89070]/20 text-[#2E1E05] border-transparent"
+                              : "bg-[#f4f3f0] border-transparent text-[#2E1E05]/60 hover:bg-[#e8e7e4]"
                           }`}
                         >
                           {spec}
@@ -1398,7 +1431,7 @@ const BloggerDashboard = () => {
                   <button
                     type="submit"
                     disabled={profLoading}
-                    className="bg-[#1c380e] hover:bg-primary-dark text-white font-bold px-8 py-3 rounded-xl text-xs font-poppins uppercase tracking-wider shadow transition-all duration-300 disabled:opacity-50"
+                    className="bg-[#A89070] hover:bg-[#A89070]/90 text-white font-bold px-8 py-3 rounded-xl text-xs font-poppins uppercase tracking-wider shadow-sm transition-all duration-300 disabled:opacity-50"
                   >
                     {profLoading ? "Sauvegarde..." : "Sauvegarder les modifications"}
                   </button>
@@ -1407,16 +1440,16 @@ const BloggerDashboard = () => {
               </form>
 
               {/* Public Card Preview (5 cols) */}
-              <div className="lg:col-span-5 bg-white border border-primary-soft/10 rounded-3xl p-6 shadow-sm space-y-4">
+              <div className="lg:col-span-5 bg-white rounded-xl p-6 shadow-sm space-y-4">
                 <span className="text-[9px] font-poppins uppercase tracking-widest text-gray/45 font-bold block">Aperçu public sur le site</span>
                 
-                <div className="bg-ivory border border-primary-soft/20 rounded-2xl p-5 text-center space-y-4">
-                  <div className="w-16 h-16 rounded-full bg-primary-soft text-primary-dark font-bold font-poppins text-lg flex items-center justify-center mx-auto border-2 border-primary">
+                <div className="bg-ivory border border-gray/5 rounded-xl p-5 text-center space-y-4 shadow-inner">
+                  <div className="w-16 h-16 rounded-full bg-[#A89070]/20 text-[#2E1E05] font-bold font-poppins text-lg flex items-center justify-center mx-auto border-2 border-[#A89070]">
                     {profPlume ? profPlume[0].toUpperCase() : "B"}
                   </div>
                   <div>
                     <h3 className="font-serif font-bold text-base text-charcoal">{profPlume}</h3>
-                    <span className="text-[9px] font-poppins uppercase text-primary font-bold tracking-widest block mt-0.5">Membre certifié</span>
+                    <span className="text-[9px] font-poppins uppercase text-[#A89070] font-bold tracking-widest block mt-0.5">Membre certifié</span>
                   </div>
                   <p className="text-[11px] text-gray leading-relaxed font-light font-sans max-w-xs mx-auto">
                     "{profBio}"
@@ -1424,7 +1457,7 @@ const BloggerDashboard = () => {
                   
                   <div className="flex flex-wrap justify-center gap-1.5 pt-1">
                     {profSpecs.map((spec) => (
-                      <span key={spec} className="text-[8px] bg-white border border-primary-soft/20 text-gray font-poppins px-2 py-0.5 rounded">
+                      <span key={spec} className="text-[8px] bg-white border border-gray/5 text-gray font-poppins px-2 py-0.5 rounded shadow-sm">
                         {spec}
                       </span>
                     ))}
@@ -1443,7 +1476,7 @@ const BloggerDashboard = () => {
          ========================================== */}
       {deleteModalOpen && postToDelete && (
         <div className="fixed inset-0 bg-charcoal/50 backdrop-blur-sm z-[100] flex items-center justify-center p-6 animate-fade-in">
-          <div className="bg-white rounded-3xl border border-primary-soft/20 shadow-2xl p-6 max-w-sm w-full space-y-6 text-center">
+          <div className="bg-white rounded-xl shadow-2xl p-6 max-w-sm w-full space-y-6 text-center border border-transparent">
             <div className="w-12 h-12 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mx-auto">
               <Trash2 size={20} />
             </div>
@@ -1458,13 +1491,13 @@ const BloggerDashboard = () => {
             <div className="flex space-x-3">
               <button
                 onClick={() => setDeleteModalOpen(false)}
-                className="w-1/2 bg-ivory hover:bg-slate-100 text-charcoal border border-primary-soft/20 py-2.5 rounded-xl text-xs font-poppins font-bold transition-all"
+                className="w-1/2 bg-[#f4f3f0] hover:bg-[#e8e7e4] text-charcoal py-2.5 rounded-xl text-xs font-poppins font-bold transition-all"
               >
                 Annuler
               </button>
               <button
                 onClick={confirmDelete}
-                className="w-1/2 bg-rose-500 hover:bg-rose-600 text-white py-2.5 rounded-xl text-xs font-poppins font-bold transition-all shadow"
+                className="w-1/2 bg-rose-500 hover:bg-rose-600 text-white py-2.5 rounded-xl text-xs font-poppins font-bold transition-all shadow-sm"
               >
                 Supprimer
               </button>
