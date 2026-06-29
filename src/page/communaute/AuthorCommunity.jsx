@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, BookOpen, PenTool, Calendar } from "lucide-react";
+import { ArrowLeft, BookOpen, PenTool, Calendar, ArrowRight } from "lucide-react";
 import apiClient, { IMAGE_URL } from "../../api/client";
 
 const AuthorCommunity = () => {
@@ -57,7 +57,7 @@ const AuthorCommunity = () => {
   if (loading) {
     return (
       <div className="min-h-[50vh] flex flex-col items-center justify-center space-y-4">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-primary-dark" />
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-community-camel" />
         <p className="font-serif italic text-gray">Chargement du profil auteur...</p>
       </div>
     );
@@ -70,7 +70,7 @@ const AuthorCommunity = () => {
         <p className="text-gray">{error || "Cet auteur n'a pas encore publié d'articles ou de chroniques."}</p>
         <Link
           to="/communaute"
-          className="inline-flex items-center space-x-2 bg-primary text-white font-semibold px-6 py-2.5 rounded-xl hover:bg-primary-dark transition-colors"
+          className="inline-flex items-center space-x-2 bg-community-camel text-white font-semibold px-6 py-2.5 rounded-xl hover:bg-community-camel-dark transition-colors"
         >
           <ArrowLeft size={16} />
           <span>Retour à la communauté</span>
@@ -82,12 +82,12 @@ const AuthorCommunity = () => {
   return (
     <div className="container mx-auto px-6 md:px-12 max-w-5xl py-12 space-y-12">
       {/* Author Profile Card */}
-      <section className="bg-white rounded-3xl p-8 border border-primary-soft/20 shadow-sm flex items-center space-x-6">
-        <div className="w-16 h-16 bg-primary-soft/40 text-primary-dark font-serif font-bold text-2xl rounded-full flex items-center justify-center border-2 border-primary shadow-sm">
+      <section className="bg-white rounded-3xl p-8 border border-community-camel/20 shadow-sm flex items-center space-x-6">
+        <div className="w-16 h-16 bg-community-camel/20 text-community-camel-dark font-serif font-bold text-2xl rounded-full flex items-center justify-center border-2 border-community-camel shadow-sm">
           {authorName[0]?.toUpperCase()}
         </div>
         <div className="space-y-1">
-          <span className="text-[10px] uppercase font-poppins text-primary font-bold tracking-wider">
+          <span className="text-[10px] uppercase font-poppins text-community-camel font-bold tracking-wider">
             Plume de Bëgg Lire
           </span>
           <h1 className="font-serif font-bold text-2xl md:text-3xl text-charcoal leading-tight">
@@ -101,7 +101,7 @@ const AuthorCommunity = () => {
 
       {/* Author Publications Grid */}
       <section className="space-y-8">
-        <h2 className="font-serif font-bold text-xl text-charcoal border-b border-primary-soft/10 pb-3">
+        <h2 className="font-serif font-bold text-xl text-charcoal border-b border-community-camel/10 pb-3">
           Publications de {authorName}
         </h2>
 
@@ -115,7 +115,7 @@ const AuthorCommunity = () => {
             return (
               <div
                 key={idx}
-                className="bg-white rounded-3xl overflow-hidden border border-primary-soft/10 shadow-sm hover:shadow-md transition-shadow group flex flex-col justify-between h-full"
+                className="bg-white rounded-3xl overflow-hidden border border-community-camel/10 shadow-sm hover:shadow-md transition-shadow group flex flex-col justify-between h-full"
               >
                 <div className="space-y-4">
                   <Link to={detailUrl} className="h-48 overflow-hidden block bg-ivory">
@@ -128,7 +128,7 @@ const AuthorCommunity = () => {
 
                   <div className="p-6 space-y-3">
                     <div className="flex items-center justify-between text-[10px] uppercase font-poppins font-bold tracking-wider">
-                      <span className={isChronique ? "text-accent-gold" : "text-primary-dark"}>
+                      <span className={isChronique ? "text-community-camel" : "text-community-camel-dark"}>
                         {isChronique ? "Chronique" : "Article"}
                       </span>
                       {item.created_at && (
@@ -139,7 +139,7 @@ const AuthorCommunity = () => {
                       )}
                     </div>
 
-                    <h3 className="font-serif font-bold text-lg text-charcoal line-clamp-1 group-hover:text-primary transition-colors">
+                    <h3 className="font-serif font-bold text-lg text-charcoal line-clamp-1 group-hover:text-community-camel transition-colors">
                       <Link to={detailUrl}>{item.titre}</Link>
                     </h3>
 
@@ -152,7 +152,7 @@ const AuthorCommunity = () => {
                 <div className="px-6 pb-6 pt-2">
                   <Link
                     to={detailUrl}
-                    className="inline-flex items-center space-x-1.5 text-xs text-primary font-bold hover:underline"
+                    className="inline-flex items-center space-x-1.5 text-xs text-community-camel font-bold hover:underline"
                   >
                     <span>{isChronique ? "Lire le récit" : "Lire l'article"}</span>
                     <ArrowRight size={12} />

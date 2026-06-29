@@ -131,29 +131,29 @@ const CommentAndReactionSection = ({ type, id }) => {
   };
 
   return (
-    <div className="space-y-8 pt-8 border-t border-primary-soft/20">
+    <div className="space-y-8 pt-8 border-t border-community-camel/20">
       
       {/* Reactions Bar */}
-      <div className="flex items-center justify-between bg-ivory rounded-2xl px-6 py-4 border border-primary-soft/10">
+      <div className="flex items-center justify-between bg-[#E8D9A8]/20 rounded-2xl px-6 py-4 border border-[#A89070]/30">
         <div className="flex items-center space-x-2">
           <button
             onClick={handleLike}
             className={`p-2.5 rounded-full border transition-all flex items-center justify-center ${
               hasLiked
                 ? "bg-rose-50 border-rose-200 text-rose-500 scale-105"
-                : "bg-white border-primary-soft/30 text-gray hover:text-rose-500 hover:border-rose-200 hover:bg-rose-50/50"
+                : "bg-white border-[#A89070]/35 text-gray hover:text-rose-500 hover:border-rose-200 hover:bg-rose-50/50"
             }`}
             aria-label="Aimer cette publication"
           >
             <Heart className={`shrink-0 ${hasLiked ? "fill-rose-500 stroke-rose-500" : ""}`} size={20} />
           </button>
-          <span className="font-poppins text-sm font-semibold text-charcoal">
-            {likesCount} {likesCount > 1 ? "J'aime" : "J'aime"}
+          <span className="font-poppins text-xs font-bold text-[#2E1E05]">
+            {likesCount} {likesCount <= 1 ? "J'aime" : "J'aime"}
           </span>
         </div>
         
-        <div className="flex items-center space-x-2 text-gray text-xs font-poppins">
-          <MessageSquare size={16} />
+        <div className="flex items-center space-x-2 text-[#2E1E05]/80 text-xs font-poppins font-semibold">
+          <MessageSquare size={15} />
           <span>{comments.length} commentaires</span>
         </div>
       </div>
@@ -166,7 +166,7 @@ const CommentAndReactionSection = ({ type, id }) => {
 
         {commentsLoading ? (
           <div className="py-6 flex items-center justify-center space-x-2">
-            <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-primary-dark" />
+            <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-community-camel" />
             <span className="text-xs text-gray italic">Chargement des avis...</span>
           </div>
         ) : comments.length > 0 ? (
@@ -176,39 +176,40 @@ const CommentAndReactionSection = ({ type, id }) => {
               return (
                 <div
                   key={comment.id}
-                  className={`bg-white rounded-2xl p-5 border border-primary-soft/10 shadow-sm space-y-2 relative transition-all ${
-                    comment.is_pending ? "opacity-75 bg-slate-50/50 border-dashed border-primary/30" : ""
+                  className={`bg-community-cream/10 rounded-3xl p-4.5 border border-community-camel/5 shadow-sm space-y-3 relative transition-all duration-300 hover:shadow-md ${
+                    comment.is_pending ? "opacity-75 bg-slate-50/50 border-dashed border-community-camel/20" : ""
                   }`}
                 >
-                  <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 rounded-full bg-primary-soft/30 text-primary-dark font-bold font-poppins text-xs flex items-center justify-center">
-                      {initial}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 rounded-full bg-community-camel text-white font-bold font-poppins text-xs flex items-center justify-center border border-white shadow-sm shrink-0">
+                        {initial}
+                      </div>
+                      <div>
+                        <span className="font-poppins text-xs font-bold text-charcoal block">
+                          {comment.name}
+                        </span>
+                        <span className="text-[9px] text-gray/50 block font-medium">
+                          {comment.created_at ? new Date(comment.created_at).toLocaleDateString("fr-FR", {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit"
+                          }) : "Récemment"}
+                        </span>
+                      </div>
                     </div>
-                    <div>
-                      <span className="font-poppins text-xs font-semibold text-charcoal block">
-                        {comment.name}
+                    {comment.is_pending && (
+                      <span className="text-[8px] font-poppins font-bold bg-community-cream text-community-cream-dark px-2 py-0.5 rounded-md border border-community-cream/35 shrink-0 uppercase tracking-wider">
+                        En attente
                       </span>
-                      <span className="text-[10px] text-gray/50 block">
-                        {comment.created_at ? new Date(comment.created_at).toLocaleDateString("fr-FR", {
-                          day: "numeric",
-                          month: "short",
-                          year: "numeric",
-                          hour: "2-digit",
-                          minute: "2-digit"
-                        }) : "Récemment"}
-                      </span>
-                    </div>
+                    )}
                   </div>
                   
-                  <p className="text-xs text-charcoal/80 leading-relaxed font-light pl-11">
+                  <p className="text-xs text-charcoal/85 leading-relaxed font-light pl-11">
                     {comment.content}
                   </p>
-
-                  {comment.is_pending && (
-                    <span className="absolute top-2 right-4 text-[9px] font-poppins font-bold bg-accent-gold/20 text-charcoal px-2.5 py-0.5 rounded-full">
-                      En attente de modération
-                    </span>
-                  )}
                 </div>
               );
             })}
@@ -219,7 +220,7 @@ const CommentAndReactionSection = ({ type, id }) => {
       </div>
 
       {/* Comment Form */}
-      <div className="bg-white rounded-3xl p-6 border border-primary-soft/10 shadow-sm space-y-4">
+      <div className="bg-white rounded-3xl p-6 border border-community-camel/10 shadow-sm space-y-4">
         <h4 className="font-serif font-bold text-base text-charcoal">Laisser un commentaire</h4>
         
         <form onSubmit={handleCommentSubmit} className="space-y-4">
@@ -235,7 +236,7 @@ const CommentAndReactionSection = ({ type, id }) => {
                   onChange={(e) => setGuestName(e.target.value)}
                   placeholder="Votre nom..."
                   required
-                  className="w-full bg-ivory text-xs px-4 py-2.5 rounded-xl border border-primary-soft/20 outline-none focus:border-primary-dark transition-colors"
+                  className="w-full bg-ivory text-xs px-4 py-2.5 rounded-xl border border-community-camel/20 outline-none focus:border-community-camel transition-colors"
                 />
               </div>
               <div className="space-y-1">
@@ -246,7 +247,7 @@ const CommentAndReactionSection = ({ type, id }) => {
                   onChange={(e) => setGuestEmail(e.target.value)}
                   placeholder="votre@email.com..."
                   required
-                  className="w-full bg-ivory text-xs px-4 py-2.5 rounded-xl border border-primary-soft/20 outline-none focus:border-primary-dark transition-colors"
+                  className="w-full bg-ivory text-xs px-4 py-2.5 rounded-xl border border-community-camel/20 outline-none focus:border-community-camel transition-colors"
                 />
               </div>
             </div>
@@ -261,7 +262,7 @@ const CommentAndReactionSection = ({ type, id }) => {
               onChange={(e) => setCommentText(e.target.value)}
               placeholder={isAuthenticated ? "Partagez votre avis sur cette publication..." : "Écrivez votre commentaire..."}
               required
-              className="w-full bg-ivory text-xs p-4 rounded-xl border border-primary-soft/20 outline-none focus:border-primary-dark transition-colors resize-none"
+              className="w-full bg-ivory text-xs p-4 rounded-xl border border-community-camel/20 outline-none focus:border-community-camel transition-colors resize-none"
             />
           </div>
 
@@ -272,8 +273,8 @@ const CommentAndReactionSection = ({ type, id }) => {
           )}
 
           {submitSuccess && (
-            <div className="text-[10px] font-semibold text-primary-dark bg-primary/10 border border-primary-soft/30 p-2.5 rounded-xl flex items-center space-x-2">
-              <CheckCircle2 size={12} className="shrink-0 text-primary" />
+            <div className="text-[10px] font-semibold text-community-camel-dark bg-community-camel/10 border border-community-camel/30 p-2.5 rounded-xl flex items-center space-x-2">
+              <CheckCircle2 size={12} className="shrink-0 text-community-camel" />
               <span>Commentaire en attente de modération</span>
             </div>
           )}
@@ -281,7 +282,7 @@ const CommentAndReactionSection = ({ type, id }) => {
           <div className="flex justify-end">
             <button
               type="submit"
-              className="bg-primary-dark hover:bg-primary text-white font-bold px-6 py-2.5 rounded-xl text-xs flex items-center space-x-1.5 shadow transition-all duration-300"
+              className="bg-community-camel hover:bg-community-camel-dark text-white font-bold px-6 py-2.5 rounded-xl text-xs flex items-center space-x-1.5 shadow transition-all duration-300"
             >
               <Send size={12} />
               <span>Publier mon commentaire</span>
